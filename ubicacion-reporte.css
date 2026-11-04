@@ -443,3 +443,16 @@
 @media (prefers-reduced-motion:reduce){
     .ubicacion-reporte *,.ubi-pin-cabeza,.ubi-pin-onda{animation:none !important;transition:none !important}
 }
+
+/* Nombre del barrio al pasar sobre la capa de barrios (capas-canton.js). */
+.leaflet-tooltip.tooltip-barrio {
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #0284c7;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+}
+.leaflet-tooltip.tooltip-barrio::before { border-top-color: #0284c7; }
+.leaflet-tooltip.tooltip-barrio small { color: #94a3b8; }

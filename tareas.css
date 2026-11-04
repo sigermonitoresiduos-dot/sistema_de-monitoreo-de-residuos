@@ -1,0 +1,309 @@
+/* Tareas del equipo municipal y panel de equipo (tareas.js). */
+
+body:not(.es-jefe) .solo-jefe { display: none !important; }
+
+.tarea-insignia {
+    display: inline-block;
+    min-width: 20px;
+    padding: 1px 7px;
+    margin-left: 4px;
+    border-radius: 999px;
+    background: #dc2626;
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 800;
+    text-align: center;
+    vertical-align: middle;
+}
+.tarea-insignia[hidden] { display: none; }
+
+.tarea-filtros {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin: 0 0 8px;
+}
+.tarea-filtros button {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 7px 6px !important;
+    border-radius: 9px !important;
+    font-size: 12px !important;
+    font-weight: 700;
+    background: rgba(148, 163, 184, .12) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(148, 163, 184, .25) !important;
+    box-shadow: none !important;
+}
+.tarea-filtros button[hidden] { display: none; }
+.tarea-filtros button.activo {
+    background: rgba(34, 197, 94, .2) !important;
+    color: #bbf7d0 !important;
+    border-color: rgba(74, 222, 128, .6) !important;
+}
+.tarea-filtros b {
+    display: inline-block;
+    min-width: 18px;
+    margin-left: 3px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, .6);
+    font-size: 11px;
+}
+
+.tarea-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 340px;
+    overflow-y: auto;
+    display: grid;
+    gap: 6px;
+}
+.tarea-item {
+    width: 100% !important;
+    margin: 0 !important;
+    display: grid !important;
+    gap: 3px;
+    text-align: left;
+    padding: 9px 10px !important;
+    border-radius: 11px !important;
+    background: rgba(15, 23, 42, .65) !important;
+    border: 1px solid rgba(148, 163, 184, .2) !important;
+    border-left: 4px solid #64748b !important;
+    color: #e2e8f0 !important;
+    box-shadow: none !important;
+    font-weight: 400 !important;
+}
+.tarea-item:hover { border-color: rgba(74, 222, 128, .5) !important; }
+.tarea-item.tarea-asignada, .tarea-item.tarea-en-proceso { border-left-color: #3b82f6 !important; }
+.tarea-item.tarea-devuelta { border-left-color: #f59e0b !important; }
+.tarea-item.tarea-cumplida { border-left-color: #22c55e !important; }
+.tarea-item.tarea-vencida { border-left-color: #ef4444 !important; }
+.tarea-item.tarea-aprobada { border-left-color: #15803d !important; }
+
+.tarea-fila { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.tarea-sector { font-size: 12px; color: #94a3b8; }
+.tarea-texto { font-size: 12.5px; color: #cbd5e1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tarea-plazo { font-size: 11.5px; font-weight: 700; color: #fde68a; }
+.tarea-vencida .tarea-plazo, .tarea-tarjeta.tarea-vencida .tarea-plazo { color: #fca5a5; }
+
+.tarea-chip {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, .18);
+    color: #bfdbfe;
+    white-space: nowrap;
+}
+.tarea-chip.tarea-devuelta { background: rgba(245, 158, 11, .2); color: #fde68a; }
+.tarea-chip.tarea-cumplida { background: rgba(34, 197, 94, .2); color: #bbf7d0; }
+.tarea-chip.tarea-vencida { background: rgba(239, 68, 68, .22); color: #fecaca; }
+.tarea-chip.tarea-aprobada { background: rgba(21, 128, 61, .3); color: #bbf7d0; }
+.tarea-chip.tarea-cancelada { background: rgba(100, 116, 139, .25); color: #cbd5e1; }
+
+.tarea-vacia { color: #94a3b8; font-size: 12.5px; padding: 6px 2px; list-style: none; }
+
+/* Sección dentro del detalle del reporte */
+.tarea-seccion {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(148, 163, 184, .25);
+}
+.tarea-seccion h3 { margin: 0 0 10px; color: #86efac; font-size: 17px; }
+.tarea-form, .tarea-tarjeta { display: grid; gap: 7px; }
+.tarea-tarjeta {
+    padding: 12px 13px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, .6);
+    border: 1px solid rgba(148, 163, 184, .25);
+    border-left: 4px solid #3b82f6;
+}
+.tarea-tarjeta.tarea-devuelta { border-left-color: #f59e0b; }
+.tarea-tarjeta.tarea-cumplida { border-left-color: #22c55e; }
+.tarea-tarjeta.tarea-vencida { border-left-color: #ef4444; }
+.tarea-tarjeta.tarea-aprobada { border-left-color: #15803d; }
+.tarea-tarjeta.tarea-cancelada { border-left-color: #64748b; opacity: .85; }
+
+.tarea-datos { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 2px 0; font-size: 13.5px; }
+.tarea-datos dt { color: #94a3b8; font-weight: 700; }
+.tarea-datos dd { margin: 0; color: #e2e8f0; overflow-wrap: anywhere; }
+.tarea-pre { white-space: pre-wrap; }
+.tarea-etq { font-size: 12.5px; font-weight: 700; color: #cbd5e1; margin-top: 2px; }
+.tarea-campo { width: 100%; box-sizing: border-box; }
+textarea.tarea-campo { resize: vertical; min-height: 64px; }
+
+.tarea-btn {
+    width: 100%;
+    margin: 0 !important;
+    padding: 10px 12px !important;
+    border-radius: 10px !important;
+    font-weight: 800;
+    font-size: 14px !important;
+}
+.tarea-btn.tarea-ok { background: linear-gradient(135deg, #16a34a, #15803d) !important; color: #fff !important; }
+.tarea-btn.tarea-sec { background: rgba(245, 158, 11, .2) !important; color: #fde68a !important; border: 1px solid rgba(245, 158, 11, .5) !important; box-shadow: none !important; }
+.tarea-btn.tarea-peligro { background: rgba(239, 68, 68, .15) !important; color: #fca5a5 !important; border: 1px solid rgba(239, 68, 68, .45) !important; box-shadow: none !important; }
+.tarea-btn:disabled { opacity: .6; cursor: wait; }
+.tarea-dos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: stretch; }
+.tarea-devolver { display: grid; gap: 7px; padding: 10px; border-radius: 10px; background: rgba(245, 158, 11, .08); border: 1px dashed rgba(245, 158, 11, .45); }
+.tarea-devolver[hidden] { display: none; }
+.tarea-wa {
+    display: flex; align-items: center; justify-content: center;
+    padding: 10px 12px; border-radius: 10px; font-weight: 800; font-size: 14px;
+    background: #16a34a22; color: #86efac; border: 1px solid #16a34a88; text-decoration: none;
+}
+.tarea-historial { margin-top: 10px; }
+.tarea-historial summary { cursor: pointer; color: #94a3b8; font-size: 13px; margin-bottom: 8px; }
+.tarea-historial .tarea-tarjeta { margin-bottom: 8px; }
+
+.panel-equipo input { margin-bottom: 6px; }
+.panel-equipo .hab-lista small { display: block; }
+
+@media (max-width: 768px) {
+    .tarea-dos { grid-template-columns: 1fr; }
+    .tarea-datos { grid-template-columns: 1fr; gap: 1px; }
+    .tarea-datos dd { margin-bottom: 6px; }
+    .tarea-btn { padding: 12px !important; }
+    textarea.tarea-campo, select.tarea-campo { font-size: 16px; }
+}
+
+/* Tarjetas del equipo municipal */
+.lista-personal {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.persona {
+    position: relative;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 11px;
+    align-items: center;
+    padding: 11px 40px 11px 11px;
+    border-radius: 13px;
+    background: linear-gradient(160deg, rgba(30, 41, 59, .85), rgba(15, 23, 42, .85));
+    border: 1px solid rgba(148, 163, 184, .2);
+}
+.persona-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: .5px;
+    color: #052e16;
+    background: linear-gradient(135deg, #4ade80, #16a34a);
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, .15);
+}
+.persona-datos { display: grid; gap: 3px; min-width: 0; }
+.persona-datos strong { color: #f1f5f9; font-size: 14.5px; line-height: 1.2; }
+.persona-correo {
+    color: #94a3b8;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    line-height: 1.3;
+}
+.persona-extra { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; }
+.persona-tel, .persona-carga {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.persona-tel { background: rgba(34, 197, 94, .14); color: #86efac; border: 1px solid rgba(34, 197, 94, .35); }
+.persona-tel:hover { background: rgba(34, 197, 94, .25); }
+.persona-carga { background: rgba(59, 130, 246, .16); color: #bfdbfe; }
+.persona-carga.libre { background: rgba(148, 163, 184, .14); color: #cbd5e1; }
+.persona-carga.con-vencidas { background: rgba(239, 68, 68, .18); color: #fecaca; }
+.persona-quitar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px !important;
+    height: 28px;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: grid !important;
+    place-items: center;
+    font-size: 13px !important;
+    line-height: 1;
+    background: rgba(239, 68, 68, .1) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(239, 68, 68, .35) !important;
+    box-shadow: none !important;
+}
+.persona-quitar:hover { background: rgba(239, 68, 68, .25) !important; }
+@media (max-width: 768px) {
+    .persona-quitar { width: 34px !important; height: 34px; }
+    .persona { padding-right: 46px; }
+}
+
+/* Plazo escrito por el jefe: número + horas/días */
+.plazo { display: grid; gap: 7px; }
+.plazo-fila { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: stretch; }
+.plazo-num { margin: 0 !important; font-size: 17px; font-weight: 800; text-align: center; }
+.plazo-unidad {
+    display: inline-grid;
+    grid-auto-flow: column;
+    padding: 3px;
+    border-radius: 11px;
+    background: rgba(15, 23, 42, .7);
+    border: 1px solid rgba(148, 163, 184, .25);
+}
+.plazo-unidad button, .plazo-rapidos button {
+    width: auto !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    font-weight: 700;
+}
+.plazo-unidad button {
+    padding: 8px 14px !important;
+    border-radius: 8px !important;
+    font-size: 13.5px !important;
+    background: transparent !important;
+    color: #94a3b8 !important;
+    border: 0 !important;
+}
+.plazo-unidad button.activo { background: linear-gradient(135deg, #16a34a, #15803d) !important; color: #fff !important; }
+.plazo-rapidos { display: flex; flex-wrap: wrap; gap: 6px; }
+.plazo-rapidos button {
+    padding: 5px 10px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    background: rgba(148, 163, 184, .12) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(148, 163, 184, .25) !important;
+}
+.plazo-rapidos button:hover { border-color: rgba(74, 222, 128, .6) !important; color: #bbf7d0 !important; }
+.plazo-vence {
+    margin: 0;
+    padding: 7px 10px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #fde68a;
+    background: rgba(245, 158, 11, .1);
+    border: 1px solid rgba(245, 158, 11, .3);
+}
+.plazo-vence::first-letter { text-transform: uppercase; }
+.plazo-vence.error { color: #fecaca; background: rgba(239, 68, 68, .12); border-color: rgba(239, 68, 68, .4); }
+@media (max-width: 768px) {
+    .plazo-num { font-size: 18px; }
+    .plazo-unidad button { padding: 10px 14px !important; }
+    .plazo-rapidos button { padding: 7px 12px !important; font-size: 13px !important; }
+}

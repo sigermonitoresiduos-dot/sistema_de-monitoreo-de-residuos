@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link rel="stylesheet" href="agrupacion-reportes.css">
     <link rel="stylesheet" href="ubicacion-reporte.css">
+    <link rel="stylesheet" href="habitantes.css">
+    <link rel="stylesheet" href="tareas.css">
 </head>
 
 
@@ -145,20 +147,8 @@
 
         <div class="lista-autores">
 
-            <p>• Aguilera Rosado Judith Mayerly</p>
-            <p>• Barzola Barzola Madelyn Antonela</p>
-            <p>• Duarte Vergara Evelyn Eliana</p>
-            <p>• Fernandez Guzman Jeniffer Alexandra</p>
             <p>• Macias Chica Steven Enrique</p>
             <p>• Mendoza Zambrano Justin Bryan</p>
-            <p>• Peñafiel Rivas Jostin Ramon</p>
-            <p>• Posligua Peñafiel Victor Elian</p>
-            <p>• Toscano Polanco Karla Odalis</p>
-            <p>• Valarezo Estrada David Vicente</p>
-            <p>• Vargas Montes Melanie Camila</p>
-            <p>• Vera Aviles Jesus Estefano</p>
-            <p>• Villacres Arriciaga Bryan Alexis</p>
-            <p>• Palma Intriago Andersson Ariel</p>
 
         </div>
 
@@ -172,10 +162,16 @@
 
             <h2>📌 Reportar Residuo</h2>
 
-            <p class="ayuda-reportante">Datos del reportante (opcionales)</p>
-            <label class="etiqueta-fecha" for="nombreReportante">Nombre y apellido</label>
-            <input type="text" id="nombreReportante" placeholder="Puedes dejarlo vacío" autocomplete="name">
-            <label class="etiqueta-fecha" for="correoReporte">Correo de contacto</label>
+            <div class="hab-identidad solo-ciudadano">
+                <p class="hab-titulo">🪪 Habitante de Buena Fe</p>
+                <p class="hab-ayuda">Solo pueden reportar las personas registradas por el municipio. Escribe tu cédula y tu nombre completo como aparecen en tu cédula.</p>
+                <label class="etiqueta-fecha" for="cedulaReportante">Número de cédula</label>
+                <input type="text" id="cedulaReportante" placeholder="Ej. 1204567890" inputmode="numeric" maxlength="13" autocomplete="off">
+            </div>
+            <p class="ayuda-reportante solo-admin-reportes" hidden>Datos del reportante (opcionales)</p>
+            <label class="etiqueta-fecha" for="nombreReportante">Nombres y apellidos</label>
+            <input type="text" id="nombreReportante" placeholder="Ej. Mendoza Zambrano Justin Bryan" autocomplete="name">
+            <label class="etiqueta-fecha" for="correoReporte">Correo de contacto (opcional)</label>
             <input type="email" id="correoReporte" placeholder="Puedes dejarlo vacío" autocomplete="email">
 
             <label class="etiqueta-fecha" for="tipo">Tipo de residuo</label>
@@ -195,7 +191,10 @@ placeholder="Describe el problema"></textarea>
 <input
 type="text"
 id="sector"
+list="listaSectores"
+autocomplete="off"
 placeholder="Ingrese sector o barrio">
+<datalist id="listaSectores"></datalist>
 
 <fieldset class="ubicacion-reporte" id="ubicacionReporte" data-modo="gps">
     <legend class="ubi-cabecera">
@@ -302,6 +301,39 @@ multiple>
     <option>Alto</option>
 </select>
 
+<section id="panelTareas" class="panel-consulta panel-tareas solo-admin-reportes" aria-label="Tareas del equipo municipal" hidden>
+    <h3><span data-titulo>📋 Tareas</span> <span id="insigniaTareas" class="tarea-insignia" hidden>0</span></h3>
+    <div class="tarea-filtros" role="tablist">
+        <button type="button" data-filtro="activas" class="activo">En curso <b>0</b></button>
+        <button type="button" data-filtro="revisar">Por revisar <b>0</b></button>
+        <button type="button" data-filtro="vencidas">Vencidas <b>0</b></button>
+        <button type="button" data-filtro="cerradas">Cerradas <b>0</b></button>
+    </div>
+    <ul class="tarea-lista" data-lista></ul>
+</section>
+
+<section id="panelEquipo" class="panel-consulta panel-equipo solo-admin-reportes solo-jefe" aria-label="Equipo municipal" hidden>
+    <h3>👥 Equipo municipal</h3>
+    <p class="hab-ayuda">Personas del GAD que pueden entrar como administradores y recibir tareas.</p>
+    <input id="personalCorreo" type="email" placeholder="Correo de la persona" autocomplete="off">
+    <input id="personalNombre" type="text" placeholder="Nombre y apellido">
+    <input id="personalTelefono" type="tel" inputmode="numeric" placeholder="Celular para WhatsApp (opcional)">
+    <button class="boton-secundario" type="button" id="btnAgregarPersonal">Agregar al equipo</button>
+    <p id="estadoPersonal" class="hab-estado" role="status" aria-live="polite"></p>
+    <ul id="listaPersonal" class="lista-personal"></ul>
+</section>
+
+<section class="panel-consulta panel-habitantes solo-admin-reportes solo-jefe" aria-label="Habitantes autorizados" hidden>
+    <h3>🪪 Habitantes autorizados</h3>
+    <p class="hab-ayuda">Solo estas personas pueden reportar como ciudadanos. Sube el Excel (columnas <b>cedula</b> y <b>nombres</b>) o pega las filas copiadas de Excel.</p>
+    <input id="archivoHabitantes" type="file" accept=".xlsx,.xls,.csv">
+    <textarea id="textoHabitantes" rows="3" placeholder="1250429915	Macias Chica Steven Enrique"></textarea>
+    <button class="boton-secundario" type="button" id="btnAutorizarHabitantes" onclick="autorizarHabitantes()">Autorizar personas</button>
+    <p id="estadoHabitantes" class="hab-estado" role="status" aria-live="polite"></p>
+    <input id="buscarHabitante" type="search" placeholder="Buscar por apellido, nombre o cédula">
+    <ul id="listaHabitantes" class="hab-lista"></ul>
+</section>
+
 <section class="panel-consulta solo-admin-reportes" aria-label="Consultar reporte" hidden>
     <h3>🔎 Consultar reporte</h3>
     <input id="consultaReporte" type="search" placeholder="Código RM, sector o reportante">
@@ -309,18 +341,11 @@ multiple>
 </section>
 
 <section class="panel-filtros solo-admin-reportes" aria-label="Filtros de reportes" hidden>
-    <h3>🔎 Filtrar reportes</h3>
-    <select id="filtroTipo"><option value="">Todos los residuos</option><option>Orgánico</option><option>Inorgánico</option><option>Reciclable</option><option>Peligroso</option></select>
-    <select id="filtroNivel"><option value="">Todos los niveles</option><option>Bajo</option><option>Medio</option><option>Alto</option></select>
-    <select id="filtroEstado"><option value="">Todos los estados</option><option>Pendiente</option><option>En revisión</option><option>Atendido</option><option>Descartado</option></select>
-    <input id="filtroSector" type="search" placeholder="Buscar sector o barrio">
+    <h3>📅 Buscar reportes por fecha</h3>
     <label class="etiqueta-fecha" for="filtroFechaDesde">Día de los reportes (hora de Ecuador)</label>
     <input id="filtroFechaDesde" type="date">
     <p>Selecciona una fecha para consultar sus reportes. La búsqueda se realiza en ese día.</p>
     <button class="boton-secundario" type="button" onclick="volverReportesHoy()">Ver hoy</button>
-    <label class="filtro-check"><input id="filtroCriticos" type="checkbox"> Mostrar solo puntos críticos</label>
-    <label class="filtro-check"><input id="filtroMios" type="checkbox"> Ver solo mis reportes</label>
-    <button class="boton-secundario" type="button" onclick="limpiarFiltros()">Limpiar filtros</button>
 </section>
 
 
@@ -412,7 +437,7 @@ multiple>
             </div>
         </div>
 
-        <button class="solo-admin" onclick="reiniciarSistema()">🗑 Reiniciar Sistema</button>
+        <button class="solo-admin solo-jefe" onclick="reiniciarSistema()">🗑 Reiniciar Sistema</button>
     </div>
 </aside>
 
@@ -709,6 +734,12 @@ Aprende conceptos importantes sobre residuos y cuidado ambiental 🌎
     <script src="agrupacion-reportes.js"></script>
     <script src="mapa-reportes.js"></script>
     <script src="ubicacion-reporte.js"></script>
+    <script src="habitantes.js"></script>
+    <script src="sectores.js"></script>
+    <script src="capas-canton.js"></script>
+    <script src="tareas.js"></script>
+    <script src="exportar-excel.js"></script>
+    <script src="exportar-pdf.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="fotos-reportes.js"></script>
@@ -745,8 +776,14 @@ getFirestore,
 collection,
 addDoc,
 getDocs,
+getDoc,
+setDoc,
+writeBatch,
+serverTimestamp,
 query,
 where,
+limit,
+getCountFromServer,
 onSnapshot,
 updateDoc,
 deleteDoc,
@@ -830,9 +867,41 @@ const CORREOS_ADMINISTRADORES = [
     "sistemamonitoreo25@gmail.com"
 ];
 
-function esAdministrador(usuario = auth.currentUser) {
+// Roles:
+// - Jefes (CORREOS_ADMINISTRADORES): todo, incluido asignar tareas, equipo y cédulas.
+// - Personal municipal (colección "personal"): ve los reportes, cambia estados y
+//   atiende las tareas que le asignan. Se agrega desde el panel "Equipo municipal".
+let personalActual = null; // { email, nombre, ... } si la sesión es de personal municipal
+
+function esJefe(usuario = auth.currentUser) {
     const correo = usuario?.email?.trim().toLowerCase();
     return Boolean(correo && CORREOS_ADMINISTRADORES.includes(correo));
+}
+
+function esAdministrador(usuario = auth.currentUser) {
+    if (esJefe(usuario)) return true;
+    const correo = usuario?.email?.trim().toLowerCase();
+    return Boolean(correo && personalActual && personalActual.email === correo && personalActual.activo !== false);
+}
+
+let rolPendiente = null;
+async function cargarRol(usuario) {
+    const correo = usuario?.email?.trim().toLowerCase();
+    if (!correo || esJefe(usuario)) { personalActual = null; return; }
+    if (personalActual?.email === correo) return;
+    // El inicio de sesión y onAuthStateChanged pueden pedirlo a la vez: una sola consulta.
+    if (rolPendiente?.correo === correo) return rolPendiente.promesa;
+    const promesa = (async () => {
+        try {
+            const ficha = await getDoc(doc(db, "personal", correo));
+            personalActual = ficha.exists() && ficha.data().activo !== false ? { email: correo, ...ficha.data() } : null;
+        } catch (error) {
+            personalActual = null;
+            console.warn("No se pudo leer el rol del personal:", error);
+        }
+    })();
+    rolPendiente = { correo, promesa };
+    try { await promesa; } finally { rolPendiente = null; }
 }
 
 function esAutorReporte(reporte, usuario = auth.currentUser) {
@@ -845,6 +914,9 @@ function aplicarPermisosRuta(usuario = auth.currentUser) {
     const esAdmin = esAdministrador(usuario);
     document.body.classList.toggle("es-admin", esAdmin);
     document.querySelectorAll('.solo-admin-reportes').forEach(panel => { panel.hidden = !esAdmin; });
+    document.querySelectorAll('.solo-ciudadano').forEach(panel => { panel.hidden = esAdmin; });
+    document.body.classList.toggle("es-jefe", esJefe(usuario));
+    if (esJefe(usuario)) cargarHabitantes();
     if (!esAdmin && typeof volverReportesHoy === 'function') window.volverReportesHoy();
     document.body.classList.toggle("es-ciudadano", Boolean(usuario) && !esAdmin);
     if (!esAdmin && typeof limpiarRuta === "function") limpiarRuta();
@@ -899,15 +971,12 @@ window.iniciarSesion = async function() {
         escribirMensajeAcceso("Ingresa el correo y la contraseña.", true);
         return;
     }
-    if (!CORREOS_ADMINISTRADORES.includes(correo)) {
-        escribirMensajeAcceso("Esta cuenta no tiene permisos de administrador.", true);
-        return;
-    }
     try {
         boton.disabled = true;
         boton.textContent = "Ingresando...";
         escribirMensajeAcceso("Verificando credenciales...");
         const credencial = await signInWithEmailAndPassword(auth, correo, password);
+        await cargarRol(credencial.user);
         if (!esAdministrador(credencial.user)) {
             await signOut(auth);
             throw new Error("Cuenta sin autorización administrativa.");
@@ -961,6 +1030,7 @@ const BUCKET_FOTOS = "fotos-reportes";
 
 onAuthStateChanged(auth, async (user) => {
     window.cerrarDetalleReporte?.();
+    await cargarRol(user);
     const admin = esAdministrador(user);
     const perfil = document.getElementById("perfilUsuario");
     const nombre = document.getElementById("nombreUsuario");
@@ -973,8 +1043,8 @@ onAuthStateChanged(auth, async (user) => {
 
     if (admin) {
         window.cerrarAccesoAdministrador();
-        nombre.textContent = user.email;
-        rol.textContent = "Administrador";
+        nombre.textContent = personalActual?.nombre || user.email;
+        rol.textContent = esJefe(user) ? "Administrador" : "Personal municipal";
         perfil.hidden = false;
         botonAcceso.hidden = true;
         botonSalir.hidden = false;
@@ -988,6 +1058,8 @@ onAuthStateChanged(auth, async (user) => {
 
     document.body.classList.remove("login-activo");
     aplicarPermisosRuta(user);
+    // Tareas del equipo municipal (jefes y personal).
+    if (admin) tareasMunicipales?.iniciar(); else tareasMunicipales?.detener();
 
     if (!user) {
         await asegurarSesionPublica();
@@ -1046,6 +1118,34 @@ attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_b
 subdomains: 'abcd',
 maxZoom: 20
 }).addTo(map);
+
+// Límite del cantón, parroquias y barrios dibujados en ArcMap (si existen).
+// También da el catálogo de nombres oficiales para unificar sectores.
+const capasCanton = window.CapasCanton?.iniciar({
+    map,
+    alCargar: () => {
+        try { if (reportesActuales.length) { Sectores.unificarReportes(reportesActuales, capasCanton.catalogo()); aplicarFiltros(); actualizarEstadisticas(); } } catch (e) { /* aún sin reportes */ }
+        actualizarSugerenciasSector();
+    }
+}) || null;
+
+function catalogoSectores() {
+    return capasCanton?.catalogo() || window.Sectores?.crearCatalogo([]) || new Map();
+}
+
+// Sugerencias al escribir el sector: barrios oficiales, lugares del cantón y
+// sectores ya reportados (sin repetir mayúsculas/minúsculas).
+function actualizarSugerenciasSector() {
+    const lista = document.getElementById("listaSectores");
+    if (!lista || !window.Sectores) return;
+    const nombres = new Map();
+    [...(capasCanton?.nombres() || []), ...reportesActuales.map(r => r.sector)].forEach(n => {
+        const visible = Sectores.canonico(n, catalogoSectores());
+        if (visible) nombres.set(Sectores.clave(visible), visible);
+    });
+    lista.innerHTML = [...nombres.values()].sort((a, b) => a.localeCompare(b, "es"))
+        .map(n => `<option value="${escaparHTML(n)}"></option>`).join("");
+}
 
 const controlEcuador = L.control({ position: 'topright' });
 controlEcuador.onAdd = function() {
@@ -1141,7 +1241,7 @@ window.eliminarRegistro = async function(id){
     }
 
     const reporte = reportesActuales.find(item => item.id === id);
-    const puedeEliminar = reporte && (esAutorReporte(reporte) || esAdministrador());
+    const puedeEliminar = reporte && (esAutorReporte(reporte) || esJefe());
     if(!puedeEliminar){
         alert("Solo el autor o un administrador puede eliminar este reporte.");
         return;
@@ -1508,31 +1608,11 @@ function crearMarcadorReporte(reporte) {
     });
 }
 
-function obtenerFiltros() {
-    if (!esAdministrador()) return {};
-    return {
-        tipo: document.getElementById("filtroTipo").value,
-        nivel: document.getElementById("filtroNivel").value,
-        estado: document.getElementById("filtroEstado").value,
-        sector: document.getElementById("filtroSector").value.trim().toLowerCase(),
-        fecha: document.getElementById("filtroFechaDesde").value,
-        criticos: document.getElementById("filtroCriticos").checked,
-        mios: document.getElementById("filtroMios").checked
-    };
-}
-
 function aplicarFiltros() {
-    const filtros = obtenerFiltros();
     const apartado = configuracionApartados[apartadoReportesActual];
     const visibles = reportesActuales.filter(reporte =>
         (esAdministrador() || esAutorReporte(reporte)) &&
-        apartado.estados.includes(reporte.estado) &&
-        (!filtros.tipo || reporte.tipo === filtros.tipo) &&
-        (!filtros.nivel || reporte.nivel === filtros.nivel) &&
-        (!filtros.estado || reporte.estado === filtros.estado) &&
-        (!filtros.sector || (reporte.sector || "").toLowerCase().includes(filtros.sector)) &&
-        (!filtros.criticos || prioridadReporte(reporte) === "Crítica") &&
-        (!filtros.mios || esAutorReporte(reporte))
+        apartado.estados.includes(reporte.estado)
     );
     renderizarReportes(visibles);
     actualizarSelectorGadRuta();
@@ -1548,13 +1628,6 @@ function actualizarEncabezadoApartado() {
         ? configuracion.descripcionCiudadano
         : configuracion.descripcion;
 }
-
-window.limpiarFiltros = function() {
-    ["filtroTipo", "filtroNivel", "filtroEstado", "filtroSector"].forEach(id => document.getElementById(id).value = "");
-    document.getElementById("filtroCriticos").checked = false;
-    document.getElementById("filtroMios").checked = false;
-    aplicarFiltros();
-};
 
 window.consultarReporte = function() {
     if (!esAdministrador()) return;
@@ -1612,7 +1685,7 @@ function renderizarReportes(reportes) {
         const prioridad = prioridadReporte(reporte);
         const esAutor = esAutorReporte(reporte);
         const usuarioEsAdministrador = esAdministrador(auth.currentUser);
-        const puedeEliminar = esAutor || usuarioEsAdministrador;
+        const puedeEliminar = esAutor || esJefe();
         const fotos = Array.isArray(reporte.fotos) ? reporte.fotos : [];
         const fila = document.createElement("tr");
         fila.innerHTML = `
@@ -1764,6 +1837,8 @@ function aplicarSnapshotReportes(snapshot) {
     if (firmaNueva === firmaUltimosReportes) return false;
     firmaUltimosReportes = firmaNueva;
     const recibidos = snapshot.docs.map(documento => ({ id: documento.id, estado: "Pendiente", ...documento.data() }));
+    // "SAN FELIPE" y "san felipe" se muestran y cuentan como el mismo sector.
+    try { window.Sectores?.unificarReportes(recibidos, catalogoSectores()); } catch (e) { /* se muestran como llegaron */ }
     // Defensa adicional de privacidad en la interfaz, incluso si una consulta
     // antigua permaneciera activa durante un cambio de sesión.
     reportesActuales = esAdministrador()
@@ -1772,6 +1847,7 @@ function aplicarSnapshotReportes(snapshot) {
     actualizarContadoresApartados();
     aplicarFiltros();
     actualizarEstadisticas();
+    actualizarSugerenciasSector();
     return true;
 }
 
@@ -1873,11 +1949,46 @@ function actualizarGraficos(organicos, inorganicos, reciclables) {
     window.graficoMensual = new Chart(document.getElementById("graficoMensual"), { type: "line", data: { labels: meses.map(m => m.toLocaleDateString("es-EC", {month:"short"})), datasets: [{ label: "Reportes por mes", data: valores, borderColor: "#4ade80", backgroundColor: "rgba(74,222,128,.18)", fill: true, tension: .35 }] }, options: { responsive: true, animation: false, plugins: { legend: { labels: { color: "white" } } }, scales: { x: { ticks: { color: "white" } }, y: { beginAtZero:true, ticks: { color: "white" } } } } });
 }
 
+// Reportes de otros días abiertos desde una tarea (no están en la vista del día).
+const reportesExtra = new Map();
+let reporteDetalleAbierto = null;
+function buscarReporte(id) {
+    return reportesActuales.find(r => r.id === id) || reportesExtra.get(id) || null;
+}
+
+async function abrirReporteDeTarea(id) {
+    if (!buscarReporte(id)) {
+        try {
+            const ficha = await getDoc(doc(db, "reportes", id));
+            if (!ficha.exists()) return alert("Este reporte ya no existe (pudo ser eliminado).");
+            const reporte = { id: ficha.id, estado: "Pendiente", ...ficha.data() };
+            try { Sectores.unificarReportes([reporte], catalogoSectores()); } catch (e) { /* tal cual */ }
+            reportesExtra.set(id, reporte);
+        } catch (error) {
+            return alert("No se pudo abrir el reporte: " + error.message);
+        }
+    }
+    window.verDetalleReporte(id);
+}
+
+const tareasMunicipales = window.Tareas?.crear({
+    db, auth, escaparHTML, mostrarToast, codigoReporte,
+    fs: { collection, doc, addDoc, updateDoc, deleteDoc, setDoc, onSnapshot, query, where, serverTimestamp },
+    correosJefes: CORREOS_ADMINISTRADORES,
+    esJefe: () => esJefe(), esPersonal: () => esAdministrador(),
+    sonar: () => sonarAvisoAdmin(),
+    abrirReporte: id => abrirReporteDeTarea(id),
+    reporteAbierto: () => (document.getElementById("modalReporte")?.hidden ? null : reporteDetalleAbierto),
+    actualizarEstadoReporte: (id, estado) => window.actualizarEstadoReporte(id, estado, true)
+}) || null;
+
 window.verDetalleReporte = function(id) {
-    const reporte = reportesActuales.find(r => r.id === id); if (!reporte || (!esAdministrador() && !esAutorReporte(reporte))) return;
+    const reporte = buscarReporte(id); if (!reporte || (!esAdministrador() && !esAutorReporte(reporte))) return;
+    reporteDetalleAbierto = id;
     grupoDetalleAbierto = null;
     const fotos = (reporte.fotos || []).map(url => `<a href="${escaparHTML(url)}" target="_blank" rel="noopener"><img src="${escaparHTML(url)}" alt="Fotografía del reporte"></a>`).join("") || "<p>Este reporte no tiene fotografías.</p>";
-    document.getElementById("contenidoDetalleReporte").innerHTML = `<h2 id="tituloDetalleReporte">${escaparHTML(codigoReporte(reporte))}</h2><p class="detalle-meta">${escaparHTML(reporte.tipo)}${reporte.subtipo ? ` · ${escaparHTML(reporte.subtipo)}` : ""} · ${escaparHTML(reporte.estado)} · Prioridad ${prioridadReporte(reporte)}</p><p>${escaparHTML(reporte.descripcion)}</p><dl><dt>Sector</dt><dd>${escaparHTML(reporte.sector)}</dd><dt>Nivel</dt><dd>${escaparHTML(reporte.nivel)}</dd><dt>Reportado por</dt><dd>${escaparHTML(reporte.correo)}</dd><dt>Fecha</dt><dd>${fechaReporte(reporte).toLocaleString("es-EC")}</dd><dt>Ubicación</dt><dd>${Number(reporte.lat).toFixed(5)}, ${Number(reporte.lon).toFixed(5)}<br><small class="${reporte.origenUbicacion && reporte.origenUbicacion !== "gps" ? "origen-manual" : "origen-gps"}">${escaparHTML(window.UbicacionReporte?.textoOrigen(reporte.origenUbicacion) || "GPS del celular")}</small></dd></dl><div class="galeria-detalle">${fotos}</div>${esAdministrador() ? `<button class="btn-popup btn-ruta" type="button" onclick="cerrarDetalleReporte(); trazarRutaHasta(${Number(reporte.lat)}, ${Number(reporte.lon)})">Cómo llegar a este reporte</button>` : ""}`;
+    document.getElementById("contenidoDetalleReporte").innerHTML = `<h2 id="tituloDetalleReporte">${escaparHTML(codigoReporte(reporte))}</h2><p class="detalle-meta">${escaparHTML(reporte.tipo)}${reporte.subtipo ? ` · ${escaparHTML(reporte.subtipo)}` : ""} · ${escaparHTML(reporte.estado)} · Prioridad ${prioridadReporte(reporte)}</p><p>${escaparHTML(reporte.descripcion)}</p><dl><dt>Sector</dt><dd>${escaparHTML(reporte.sector)}</dd><dt>Nivel</dt><dd>${escaparHTML(reporte.nivel)}</dd><dt>Reportado por</dt><dd>${escaparHTML(reporte.correo)}</dd><dt>Fecha</dt><dd>${fechaReporte(reporte).toLocaleString("es-EC")}</dd><dt>Ubicación</dt><dd>${Number(reporte.lat).toFixed(5)}, ${Number(reporte.lon).toFixed(5)}<br><small class="${reporte.origenUbicacion && reporte.origenUbicacion !== "gps" ? "origen-manual" : "origen-gps"}">${escaparHTML(window.UbicacionReporte?.textoOrigen(reporte.origenUbicacion) || "GPS del celular")}</small></dd></dl><div class="galeria-detalle">${fotos}</div>${esAdministrador() ? `<button class="btn-popup btn-ruta" type="button" onclick="cerrarDetalleReporte(); trazarRutaHasta(${Number(reporte.lat)}, ${Number(reporte.lon)})">Cómo llegar a este reporte</button>` : ""}${tareasMunicipales?.htmlDetalle(reporte) || ""}`;
+    tareasMunicipales?.conectarDetalle(document.getElementById("contenidoDetalleReporte"), reporte);
     document.getElementById("modalReporte").hidden = false;
 };
 window.cerrarDetalleReporte = () => { grupoDetalleAbierto = null; document.getElementById("modalReporte").hidden = true; };
@@ -1922,6 +2033,184 @@ async function subirImagenesASupabase(imagenes) {
 window.mostrarConfirmacionReporte = datos => new Promise(resolve => { resolverConfirmacion = resolve; document.getElementById("contenidoConfirmacion").innerHTML = `<p><b>Reportante:</b> ${escaparHTML(datos.reportante)}</p><p><b>Tipo:</b> ${escaparHTML(datos.tipo)}${datos.subtipo ? ` · ${escaparHTML(datos.subtipo)}` : ""}</p><p><b>Sector:</b> ${escaparHTML(datos.sector)}</p><p><b>Nivel:</b> ${escaparHTML(datos.nivel)}</p><p><b>Ubicación:</b> ${datos.lat.toFixed(5)}, ${datos.lon.toFixed(5)}</p><p><b>Origen del punto:</b> ${escaparHTML(window.UbicacionReporte?.textoOrigen(datos.origenUbicacion) || "GPS del celular")}</p><p><b>Fotografías:</b> ${datos.fotos} seleccionada(s)</p>`; document.getElementById("modalConfirmacion").hidden = false; });
 window.resolverConfirmacionReporte = aceptar => { document.getElementById("modalConfirmacion").hidden = true; resolverConfirmacion?.(aceptar); resolverConfirmacion = null; };
 
+// HABITANTES AUTORIZADOS
+// El ciudadano guarda en verificados/{uid} la clave de su cédula + nombre.
+// Las reglas de Firestore solo lo aceptan si esa clave está en "habitantes",
+// y solo aceptan reportes de ciudadanos que estén en "verificados".
+let claveVerificada = "";
+async function verificarHabitante(usuario, cedula, nombre) {
+    try {
+        const clave = await Habitantes.claveHabitante(cedula, nombre);
+        if (claveVerificada === `${usuario.uid}|${clave}`) return true;
+        await setDoc(doc(db, "verificados", usuario.uid), { habitante: clave, fecha: serverTimestamp() });
+        claveVerificada = `${usuario.uid}|${clave}`;
+        return true;
+    } catch (error) {
+        claveVerificada = "";
+        if (error?.code === "permission-denied") {
+            alert("Tu cédula y tu nombre no coinciden con el registro de habitantes de Buena Fe.\n\nRevisa que escribiste tu cédula y tus nombres y apellidos completos, como aparecen en tu cédula. Si el problema sigue, acércate al GAD Municipal de Buena Fe para registrarte.");
+            document.getElementById("cedulaReportante")?.focus();
+        } else {
+            alert("No se pudo verificar tu cédula. Revisa tu conexión a internet e inténtalo de nuevo.");
+        }
+        return false;
+    }
+}
+
+// El panel no descarga toda la lista (pueden ser miles de personas):
+// muestra el total y busca en Firebase solo lo que escribe el administrador.
+let habitantesCargados = [];
+let totalHabitantes = 0;
+let cargandoHabitantes = false;
+let versionBusquedaHabitantes = 0;
+let temporizadorBusquedaHabitantes = null;
+function escribirEstadoHabitantes(mensaje, tipo = "") {
+    const estado = document.getElementById("estadoHabitantes");
+    if (!estado) return;
+    estado.textContent = mensaje;
+    estado.dataset.tipo = tipo;
+}
+
+function pintarHabitantes(mensaje = "") {
+    const lista = document.getElementById("listaHabitantes");
+    if (!lista) return;
+    if (mensaje) { lista.innerHTML = `<li class="hab-vacio">${escaparHTML(mensaje)}</li>`; return; }
+    lista.innerHTML = habitantesCargados.map(h => `
+        <li>
+            <span><strong>${escaparHTML(h.nombre)}</strong><small>${escaparHTML(Habitantes.ocultarCedula(h.cedula))}</small></span>
+            <button type="button" class="hab-quitar" data-id="${escaparHTML(h.id)}" title="Quitar autorización">Quitar</button>
+        </li>`).join("") || `<li class="hab-vacio">No se encontró a nadie con esos datos.</li>`;
+}
+
+function escribirTotalHabitantes() {
+    escribirEstadoHabitantes(totalHabitantes
+        ? `${totalHabitantes} persona(s) autorizada(s) para reportar.`
+        : "Todavía no hay personas autorizadas.");
+}
+
+// Busca por cédula (desde 3 dígitos) o por el inicio del nombre tal como
+// está en la lista (normalmente el primer apellido). Máximo 20 resultados.
+async function buscarHabitantes() {
+    const texto = (document.getElementById("buscarHabitante")?.value || "").trim();
+    const digitos = texto.replace(/\D/g, "");
+    const nombre = Habitantes.palabrasNombre(texto).join(" ");
+    const version = ++versionBusquedaHabitantes;
+    habitantesCargados = [];
+    if (digitos.length < 3 && nombre.length < 3) {
+        pintarHabitantes(texto ? "Escribe al menos 3 letras o números." : "Escribe un apellido o una cédula para buscar.");
+        return;
+    }
+    pintarHabitantes("Buscando...");
+    try {
+        const campo = digitos.length >= 3 ? "cedula" : "nombre";
+        const valor = campo === "cedula" ? digitos : nombre;
+        const consultas = [getDocs(query(collection(db, "habitantes"),
+            where(campo, ">=", valor), where(campo, "<=", valor + ""), limit(20)))];
+        // Una sola palabra también se busca en cualquier parte del nombre (ej. "Steven").
+        if (campo === "nombre" && !nombre.includes(" ")) {
+            consultas.push(getDocs(query(collection(db, "habitantes"), where("palabras", "array-contains", nombre), limit(20))));
+        }
+        const resultados = new Map();
+        for (const snapshot of await Promise.all(consultas)) {
+            snapshot.docs.forEach(d => resultados.set(d.id, { id: d.id, cedula: d.data().cedula || "", nombre: d.data().nombre || "" }));
+        }
+        if (version !== versionBusquedaHabitantes) return;
+        habitantesCargados = [...resultados.values()].sort((a, b) => a.nombre.localeCompare(b.nombre, "es")).slice(0, 20);
+        pintarHabitantes();
+    } catch (error) {
+        if (version === versionBusquedaHabitantes) pintarHabitantes("No se pudo buscar. Revisa tu conexión.");
+    }
+}
+
+async function cargarHabitantes() {
+    if (cargandoHabitantes || !esJefe()) return;
+    cargandoHabitantes = true;
+    try {
+        totalHabitantes = (await getCountFromServer(collection(db, "habitantes"))).data().count;
+        escribirTotalHabitantes();
+        buscarHabitantes();
+    } catch (error) {
+        escribirEstadoHabitantes(error?.code === "permission-denied"
+            ? "Falta publicar las reglas nuevas de Firestore para usar esta lista."
+            : "No se pudo cargar la lista de habitantes.", "error");
+    } finally {
+        cargandoHabitantes = false;
+    }
+}
+
+async function leerFilasArchivoHabitantes(archivo) {
+    if (/\.csv$/i.test(archivo.name)) return Habitantes.filasDesdeTexto(await archivo.text());
+    await asegurarLibreriaExcel();
+    const libro = XLSX.read(await archivo.arrayBuffer(), { type: "array" });
+    const hoja = libro.Sheets[libro.SheetNames[0]];
+    return XLSX.utils.sheet_to_json(hoja, { header: 1, raw: true, defval: "" });
+}
+
+window.autorizarHabitantes = async function() {
+    if (!esJefe()) return;
+    const archivo = document.getElementById("archivoHabitantes");
+    const texto = document.getElementById("textoHabitantes");
+    const boton = document.getElementById("btnAutorizarHabitantes");
+    try {
+        boton.disabled = true;
+        escribirEstadoHabitantes("Leyendo la lista...");
+        const filas = [
+            ...(archivo.files[0] ? await leerFilasArchivoHabitantes(archivo.files[0]) : []),
+            ...Habitantes.filasDesdeTexto(texto.value)
+        ];
+        const { validas, descartadas } = Habitantes.prepararFilas(filas);
+        if (!validas.length) {
+            escribirEstadoHabitantes(descartadas.length
+                ? `No se autorizó a nadie. Revisa: ${descartadas.slice(0, 3).map(d => `fila ${d.fila} (${d.motivo})`).join(", ")}.`
+                : "Elige el archivo de Excel o pega las filas primero.", "error");
+            return;
+        }
+        for (let i = 0; i < validas.length; i += 400) {
+            const lote = writeBatch(db);
+            for (const persona of validas.slice(i, i + 400)) {
+                const clave = await Habitantes.claveHabitante(persona.cedula, persona.nombre);
+                lote.set(doc(db, "habitantes", clave), { cedula: persona.cedula, nombre: persona.nombre, palabras: [...new Set(Habitantes.palabrasNombre(persona.nombre))], fecha: serverTimestamp() });
+            }
+            escribirEstadoHabitantes(`Guardando ${Math.min(i + 400, validas.length)} de ${validas.length}...`);
+            await lote.commit();
+        }
+        archivo.value = ""; texto.value = "";
+        await cargarHabitantes();
+        const aviso = descartadas.length
+            ? ` No se cargaron ${descartadas.length}: ${descartadas.slice(0, 3).map(d => `fila ${d.fila} (${d.motivo})`).join(", ")}${descartadas.length > 3 ? "…" : ""}.`
+            : "";
+        escribirEstadoHabitantes(`✔ ${validas.length} persona(s) autorizada(s). Total: ${totalHabitantes}.${aviso}`, descartadas.length ? "aviso" : "ok");
+    } catch (error) {
+        escribirEstadoHabitantes(error?.code === "permission-denied"
+            ? "Firebase no permitió guardar. Publica primero las reglas nuevas de Firestore."
+            : "No se pudo guardar la lista: " + (error?.message || error), "error");
+    } finally {
+        boton.disabled = false;
+    }
+};
+
+document.getElementById("buscarHabitante")?.addEventListener("input", () => {
+    clearTimeout(temporizadorBusquedaHabitantes);
+    temporizadorBusquedaHabitantes = setTimeout(buscarHabitantes, 350);
+});
+document.getElementById("listaHabitantes")?.addEventListener("click", async evento => {
+    const boton = evento.target.closest(".hab-quitar");
+    if (!boton || !esJefe()) return;
+    const persona = habitantesCargados.find(h => h.id === boton.dataset.id);
+    if (!persona || !confirm(`¿Quitar a ${persona.nombre}? Ya no podrá enviar reportes.`)) return;
+    try {
+        boton.disabled = true;
+        await deleteDoc(doc(db, "habitantes", persona.id));
+        habitantesCargados = habitantesCargados.filter(h => h.id !== persona.id);
+        totalHabitantes = Math.max(0, totalHabitantes - 1);
+        pintarHabitantes(habitantesCargados.length ? "" : "Persona quitada. Busca a otra si lo necesitas.");
+        escribirEstadoHabitantes(`${persona.nombre} ya no está autorizado. Total: ${totalHabitantes}.`);
+    } catch (error) {
+        boton.disabled = false;
+        escribirEstadoHabitantes("No se pudo quitar a la persona.", "error");
+    }
+});
+
 window.obtenerUbicacion = async function() {
     if (procesandoFotos) return alert('Espera a que termine la preparación de las fotos.');
     const usuario = auth.currentUser || await asegurarSesionPublica();
@@ -1934,10 +2223,25 @@ window.obtenerUbicacion = async function() {
     const tipo = document.getElementById("tipo").value;
     const subtipo = document.getElementById("subtipo").value;
     const descripcion = document.getElementById("descripcion").value.trim();
-    const sector = document.getElementById("sector").value.trim();
+    // Sector con formato único ("san felipe" → "San Felipe", o el nombre oficial).
+    let sector = window.Sectores
+        ? Sectores.canonico(document.getElementById("sector").value, catalogoSectores())
+        : document.getElementById("sector").value.trim();
     const nivel = document.getElementById("nivel").value;
     if (correoContacto && !/^\S+@\S+\.\S+$/.test(correoContacto)) return alert("El correo es opcional, pero si lo escribes debe ser válido.");
-    if (!descripcion || !sector) return alert("Completa la descripción y el sector antes de continuar.");
+    // Con la capa de barrios, el sector puede quedar vacío: se detecta por el punto.
+    if (!descripcion || (!sector && !capasCanton?.hayBarrios())) return alert("Completa la descripción y el sector antes de continuar.");
+    // Ciudadanos: solo habitantes registrados (cédula + nombre) pueden reportar.
+    if (!esAdministrador(usuario)) {
+        const cedula = document.getElementById("cedulaReportante").value;
+        const problema = window.Habitantes?.revisarDatos(cedula, nombreReportante) ?? "No se pudo revisar la cédula. Actualiza la página.";
+        if (problema) {
+            alert(problema);
+            document.getElementById(Habitantes.cedulaValida(cedula) ? "nombreReportante" : "cedulaReportante")?.focus();
+            return;
+        }
+        if (!await verificarHabitante(usuario, cedula, nombreReportante)) return;
+    }
     try {
         // Ubicación: punto escrito o tocado en el mapa; si no, el GPS del celular.
         let manual;
@@ -1956,7 +2260,15 @@ window.obtenerUbicacion = async function() {
             lat = posicion.coords.latitude; lon = posicion.coords.longitude;
             origenUbicacion = "gps";
         }
-        const confirmar = await mostrarConfirmacionReporte({ reportante: identidadReportante, tipo, subtipo, sector, nivel, lat, lon, origenUbicacion, fotos: imagenesSeleccionadas.length });
+        // Barrio según el mapa de barrios dibujado en ArcMap (si el punto cae en uno).
+        const barrioDetectado = capasCanton?.barrioEn(lat, lon) || "";
+        if (barrioDetectado) sector = barrioDetectado;
+        if (!sector) {
+            alert("No pudimos saber en qué barrio está el punto. Escribe el sector o barrio.");
+            document.getElementById("sector")?.focus();
+            return;
+        }
+        const confirmar = await mostrarConfirmacionReporte({ reportante: identidadReportante, tipo, subtipo, sector: barrioDetectado ? `${sector} (según el mapa de barrios)` : sector, nivel, lat, lon, origenUbicacion, fotos: imagenesSeleccionadas.length });
         if (!confirmar) return;
         const fotos = await subirImagenesASupabase(imagenesSeleccionadas);
         const datosReporte = { correo: identidadReportante, uidAutor: usuario.uid, tipo, subtipo, descripcion, sector, nivel, estado: "Pendiente", lat, lon, fotos, fecha: new Date() };
@@ -1973,6 +2285,7 @@ window.obtenerUbicacion = async function() {
         imagenesSeleccionadas = []; document.getElementById("vistaPrevia").innerHTML = "";
         document.getElementById("descripcion").value = ""; document.getElementById("sector").value = "";
         document.getElementById("nombreReportante").value = ""; document.getElementById("correoReporte").value = "";
+        document.getElementById("cedulaReportante").value = "";
         mostrarToast(esAdministrador()
             ? "Reporte guardado. Pulsa el punto en el mapa y elige Cómo llegar."
             : "Reporte guardado. El administrador se encargará de atenderlo.");
@@ -1984,7 +2297,6 @@ window.obtenerUbicacion = async function() {
     }
 };
 
-["filtroTipo","filtroNivel","filtroEstado","filtroCriticos","filtroMios"].forEach(id => document.getElementById(id).addEventListener("change", aplicarFiltros));
 let versionConsultaDia = 0;
 function diaEcuador() {
     return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Guayaquil', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
@@ -2027,7 +2339,6 @@ function actualizarSubtipos() {
 }
 document.getElementById("tipo").addEventListener("change", actualizarSubtipos);
 actualizarSubtipos();
-document.getElementById("filtroSector").addEventListener("input", aplicarFiltros);
 document.getElementById("consultaReporte").addEventListener("keydown", function(evento) {
     if (evento.key === "Enter") {
         evento.preventDefault();
@@ -2083,6 +2394,41 @@ async function cargarFotoParaPDF(url) {
     };
 }
 
+// Datos comunes para el Excel y el PDF (mismo orden y mismos cálculos).
+function datosParaExportar() {
+    return reportesActuales.map(reporte => {
+        const lat = Number(reporte.lat), lon = Number(reporte.lon);
+        const valido = Number.isFinite(lat) && Number.isFinite(lon);
+        let utm = null;
+        try { utm = valido ? window.UbicacionReporte?.latLonAUtm(lat, lon) || null : null; } catch (e) { utm = null; }
+        return {
+            codigo: codigoReporte(reporte),
+            fecha: fechaReporte(reporte),
+            reportante: reporte.correo || "Anónimo",
+            tipo: reporte.tipo || "",
+            subtipo: reporte.subtipo || "",
+            descripcion: reporte.descripcion || "",
+            sector: reporte.sector || "",
+            nivel: reporte.nivel || "",
+            prioridad: prioridadReporte(reporte),
+            estado: reporte.estado || "Pendiente",
+            origen: window.UbicacionReporte?.textoOrigen(reporte.origenUbicacion) || "GPS del celular",
+            lat: valido ? lat : NaN,
+            lon: valido ? lon : NaN,
+            utm,
+            fotos: Array.isArray(reporte.fotos) ? reporte.fotos.filter(url => typeof url === "string" && /^https?:\/\//.test(url)) : []
+        };
+    });
+}
+
+function textoDiaExportacion() {
+    const diaElegido = document.getElementById("filtroFechaDesde")?.value;
+    const dia = diaElegido
+        ? new Date(`${diaElegido}T12:00:00`).toLocaleDateString("es-EC", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+        : "Reportes del día";
+    return dia.charAt(0).toUpperCase() + dia.slice(1);
+}
+
 window.descargarPDF = async function(){
     if (!esAdministrador()) {
         alert("Solo el administrador puede exportar reportes.");
@@ -2101,6 +2447,24 @@ window.descargarPDF = async function(){
         return;
     }
     mostrarToast("Generando informe PDF...");
+
+    // Informe nuevo (portada, gráficos, mapa, inventario y fichas con fotos).
+    // Si algo falla, se genera el informe sencillo de siempre.
+    if (window.ExportarPDF) {
+        const hoy = new Date();
+        try {
+            await window.ExportarPDF.generar(datosParaExportar(), {
+                dia: textoDiaExportacion(),
+                exportadoPor: auth.currentUser?.email || "Administrador",
+                plantillaMapa: `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(CLAVE_MAPA_CARTO)}`,
+                nombreArchivo: `SIGER_BuenaFe_Informe_${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}.pdf`
+            });
+            mostrarToast("Informe PDF descargado");
+            return;
+        } catch (error) {
+            console.warn("Informe PDF nuevo no disponible, se usa el sencillo:", error);
+        }
+    }
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF("p", "mm", "a4");
@@ -2315,6 +2679,26 @@ window.descargarExcel = async function(){
         return;
     }
 
+    const ahora = new Date();
+    const nombreArchivo = `SIGER_BuenaFe_Reportes_${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, "0")}-${String(ahora.getDate()).padStart(2, "0")}.xlsx`;
+
+    // Excel con formato (colores, fórmulas, enlaces y fotos). Si no se puede
+    // cargar, se usa la exportación sencilla de siempre.
+    if (window.ExportarExcel) {
+        try {
+            mostrarToast("Preparando el Excel...");
+            await window.ExportarExcel.generar(datosParaExportar(), {
+                dia: textoDiaExportacion(),
+                exportadoPor: auth.currentUser?.email || "Administrador",
+                nombreArchivo
+            });
+            mostrarToast("Excel descargado");
+            return;
+        } catch (error) {
+            console.warn("Excel con formato no disponible, se usa el sencillo:", error);
+        }
+    }
+
     mostrarToast("Preparando el generador de Excel...");
     try {
         await asegurarLibreriaExcel();
@@ -2323,7 +2707,6 @@ window.descargarExcel = async function(){
         return;
     }
 
-    const ahora = new Date();
     const total = reportesActuales.length;
     const conFotos = reportesActuales.filter(r => Array.isArray(r.fotos) && r.fotos.length).length;
     const porEstado = contarPor(reportesActuales, r => r.estado || "Pendiente");
@@ -2414,8 +2797,8 @@ window.descargarExcel = async function(){
 
 window.reiniciarSistema = async function(){
 
-if(!esAdministrador()){
-    alert("Solo el administrador puede reiniciar el sistema.");
+if(!esJefe()){
+    alert("Solo el administrador principal puede reiniciar el sistema.");
     return;
 }
 
@@ -2694,16 +3077,10 @@ function distanciaAproxKm(origen, reporte) {
 }
 
 function reportesPendientesParaRuta() {
-    const filtros = obtenerFiltros();
     return reportesActuales.filter(reporte =>
         ["Pendiente", "En revisión"].includes(reporte.estado) &&
         Number.isFinite(Number(reporte.lat)) &&
-        Number.isFinite(Number(reporte.lon)) &&
-        (!filtros.tipo || reporte.tipo === filtros.tipo) &&
-        (!filtros.nivel || reporte.nivel === filtros.nivel) &&
-        (!filtros.sector || (reporte.sector || "").toLowerCase().includes(filtros.sector)) &&
-        (!filtros.criticos || prioridadReporte(reporte) === "Crítica") &&
-        (!filtros.mios || esAutorReporte(reporte))
+        Number.isFinite(Number(reporte.lon))
     );
 }
 

@@ -1,4 +1,4 @@
-const CACHE = "siger-app-v11";
+const CACHE = "siger-app-v19";
 const ASSETS = [
     "./",
     "./index.html",
@@ -9,6 +9,16 @@ const ASSETS = [
     "./mapa-reportes.js",
     "./ubicacion-reporte.js",
     "./ubicacion-reporte.css",
+    "./habitantes.js",
+    "./habitantes.css",
+    "./exportar-excel.js",
+    "./exportar-pdf.js",
+    "./sectores.js",
+    "./capas-canton.js",
+    "./tareas.js",
+    "./tareas.css",
+    "./limites-buena-fe.geojson",
+    "./lugares-buena-fe.json",
     "./agrupacion-reportes.css",
     "./vendor/leaflet.markercluster.js",
     "./vendor/MarkerCluster.css",

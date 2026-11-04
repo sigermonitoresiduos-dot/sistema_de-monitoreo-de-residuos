@@ -1,0 +1,54 @@
+SIGER - Barrios y sectores de Buena Fe en ArcMap 10.8
+=====================================================
+
+Esta carpeta sirve para DIBUJAR los barrios en ArcMap y PUBLICARLOS en la pagina.
+Cuando la pagina tiene los barrios:
+  - se ven en el mapa (pasando el mouse o tocando, sale el nombre),
+  - el barrio se llena SOLO segun el punto del reporte,
+  - el Excel y el PDF agrupan por el nombre oficial (sin repetidos).
+
+CONTENIDO
+  1_CREAR_KIT.bat          crea las capas (no borra lo que ya dibujaste)
+  2_PUBLICAR_BARRIOS.bat   pasa tus barrios a la pagina (barrios-buena-fe.geojson)
+  capas\Barrios.shp        AQUI se dibujan los barrios
+  capas\Limite_Canton.shp  limite del canton (OpenStreetMap)
+  capas\Parroquias.shp     San Jacinto de Buena Fe y Patricia Pilar
+  capas\Lugares_OSM.shp    recintos y lugares con nombre, solo de referencia
+
+PASO 1 - Abrir en ArcMap
+  1. Abre ArcMap 10.8 con un mapa en blanco.
+  2. Arrastra a la tabla de contenidos los 4 archivos .shp de la carpeta "capas".
+  3. Fondo satelital: File > Add Data > Add Basemap > "Imagery" (necesita internet).
+  4. Recomendado: View > Data Frame Properties > Coordinate System >
+     Projected > UTM > WGS 1984 > Southern Hemisphere > WGS 1984 UTM Zone 17S.
+     (Solo cambia como se VE; NO cambies el sistema de coordenadas de Barrios.shp.)
+
+PASO 2 - Dibujar cada barrio
+  1. Barra Editor > Start Editing > elige la carpeta "capas".
+  2. Ventana Create Features > Barrios > herramienta Polygon.
+  3. Dibuja el contorno del barrio siguiendo las calles; doble clic para terminar.
+  4. Para el barrio de al lado usa "Auto Complete Polygon" (asi no quedan huecos
+     ni se montan los barrios).
+  5. Abre la tabla de atributos (o Attributes) y llena:
+       NOMBRE     nombre del barrio, ej. San Felipe   (OBLIGATORIO)
+       TIPO       Barrio, Ciudadela, Urbanizacion, Lotizacion, Cooperativa, Recinto o Sector
+       PARROQUIA  San Jacinto de Buena Fe  o  Patricia Pilar
+       OBSERV     notas (opcional)
+       FUENTE     de donde salio el limite, ej. "Catastro GAD Buena Fe"
+  6. Editor > Save Edits seguido, para no perder trabajo.
+
+  Consejo: revisa los limites con alguien de Catastro o Planificacion del GAD.
+  Lo que dibujes es lo que la pagina usara para asignar el barrio a cada reporte.
+
+PASO 3 - Publicar en la pagina
+  1. En ArcMap: Editor > Save Edits (y si quieres, Stop Editing).
+  2. Doble clic en 2_PUBLICAR_BARRIOS.bat
+     -> crea/actualiza "barrios-buena-fe.geojson" en la carpeta de la pagina.
+  3. Sube la pagina (GitHub + Vercel). Listo: los barrios aparecen en el mapa.
+  Puedes repetir los pasos 2 y 3 cuantas veces quieras para agregar o corregir barrios.
+
+REQUISITOS
+  - Node.js instalado (ya lo tienes; lo usan los .bat).
+  - ArcMap solo para dibujar. Tambien sirve QGIS (gratis) con los mismos archivos.
+
+Datos de limites y lugares: (c) colaboradores de OpenStreetMap, licencia ODbL.

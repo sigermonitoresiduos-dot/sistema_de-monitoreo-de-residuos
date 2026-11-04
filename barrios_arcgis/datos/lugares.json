@@ -1,0 +1,492 @@
+[
+ {
+  "nombre": "Agua Blanca",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.901636,
+  "lon": -79.504205
+ },
+ {
+  "nombre": "Alegría del Congo",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.90908,
+  "lon": -79.521039
+ },
+ {
+  "nombre": "Barrio Lindo",
+  "tipo": "Poblado",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.582903,
+  "lon": -79.450334
+ },
+ {
+  "nombre": "Chaupingo",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.79157,
+  "lon": -79.521532
+ },
+ {
+  "nombre": "Colonia Eloy Alfaro",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.639436,
+  "lon": -79.489882
+ },
+ {
+  "nombre": "Colonia Salapi",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.776615,
+  "lon": -79.49825
+ },
+ {
+  "nombre": "Colonia San Francisco de Peripa",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.728361,
+  "lon": -79.543483
+ },
+ {
+  "nombre": "Colonia Velasco Ibarra",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.699599,
+  "lon": -79.516457
+ },
+ {
+  "nombre": "Congo",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.783985,
+  "lon": -79.487522
+ },
+ {
+  "nombre": "Coop. 12 de Octubre",
+  "tipo": "Recinto",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.55181,
+  "lon": -79.461021
+ },
+ {
+  "nombre": "Coop. Nogales Izurieta",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.876029,
+  "lon": -79.491645
+ },
+ {
+  "nombre": "Cooperativa Lola Gangotena",
+  "tipo": "Recinto",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.633654,
+  "lon": -79.393623
+ },
+ {
+  "nombre": "Corriente Grande",
+  "tipo": "Recinto",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.662062,
+  "lon": -79.395683
+ },
+ {
+  "nombre": "Dos Hermanos",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.943494,
+  "lon": -79.484496
+ },
+ {
+  "nombre": "El Caserio",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.892581,
+  "lon": -79.483413
+ },
+ {
+  "nombre": "El Chaune No 1",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.70779,
+  "lon": -79.521028
+ },
+ {
+  "nombre": "El Descanso",
+  "tipo": "Poblado",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.666129,
+  "lon": -79.449265
+ },
+ {
+  "nombre": "El Guineo",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.937272,
+  "lon": -79.463296
+ },
+ {
+  "nombre": "El Negro",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.729391,
+  "lon": -79.57979
+ },
+ {
+  "nombre": "El Rancho",
+  "tipo": "Poblado",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.551406,
+  "lon": -79.374097
+ },
+ {
+  "nombre": "El Tigre",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.906892,
+  "lon": -79.464841
+ },
+ {
+  "nombre": "El Vistazo",
+  "tipo": "Recinto",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.616582,
+  "lon": -79.469497
+ },
+ {
+  "nombre": "Estero Azul",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.658221,
+  "lon": -79.49574
+ },
+ {
+  "nombre": "Guayacanes",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.764138,
+  "lon": -79.463859
+ },
+ {
+  "nombre": "Guayaquil Chiquito",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.841829,
+  "lon": -79.578213
+ },
+ {
+  "nombre": "Hacienda Macavelo",
+  "tipo": "Poblado",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.592377,
+  "lon": -79.379638
+ },
+ {
+  "nombre": "Hacienda Muñoz Hnos",
+  "tipo": "Poblado",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.594959,
+  "lon": -79.38045
+ },
+ {
+  "nombre": "Hacienda Patolandia",
+  "tipo": "Poblado",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.565494,
+  "lon": -79.371085
+ },
+ {
+  "nombre": "Holandesa",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.730057,
+  "lon": -79.470676
+ },
+ {
+  "nombre": "La Libertad",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.830597,
+  "lon": -79.545672
+ },
+ {
+  "nombre": "La Reserva",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.795593,
+  "lon": -79.545559
+ },
+ {
+  "nombre": "La Soledad",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.859616,
+  "lon": -79.48779
+ },
+ {
+  "nombre": "Las Piedras",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.781014,
+  "lon": -79.471364
+ },
+ {
+  "nombre": "Limones",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.846861,
+  "lon": -79.487457
+ },
+ {
+  "nombre": "Los Ángeles",
+  "tipo": "Poblado",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.620324,
+  "lon": -79.424825
+ },
+ {
+  "nombre": "Los Cuatro Mangas",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.943281,
+  "lon": -79.485241
+ },
+ {
+  "nombre": "Los Rosales",
+  "tipo": "Poblado",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.897561,
+  "lon": -79.48073
+ },
+ {
+  "nombre": "Lot. Alta Gracia",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.879634,
+  "lon": -79.491252
+ },
+ {
+  "nombre": "Lot. Divino Niño",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.872013,
+  "lon": -79.482492
+ },
+ {
+  "nombre": "Lot. Fj",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.873003,
+  "lon": -79.493513
+ },
+ {
+  "nombre": "Lot. La Carolina",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.873564,
+  "lon": -79.491682
+ },
+ {
+  "nombre": "Lot. La Esperanza",
+  "tipo": "Poblado",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.546944,
+  "lon": -79.372288
+ },
+ {
+  "nombre": "Lot. Las Margaritas",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.874852,
+  "lon": -79.495082
+ },
+ {
+  "nombre": "Lot. Los Ceibos",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.874796,
+  "lon": -79.493942
+ },
+ {
+  "nombre": "Nueva Buena Fe",
+  "tipo": "Barrio",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.88926,
+  "lon": -79.483335
+ },
+ {
+  "nombre": "Nueva Espeanza",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.872088,
+  "lon": -79.488058
+ },
+ {
+  "nombre": "Pambilar",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.825062,
+  "lon": -79.477179
+ },
+ {
+  "nombre": "Piedra Marcada",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.72393,
+  "lon": -79.518689
+ },
+ {
+  "nombre": "Platos",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.885437,
+  "lon": -79.515052
+ },
+ {
+  "nombre": "Pocache",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.741492,
+  "lon": -79.549599
+ },
+ {
+  "nombre": "Pocache Arriba",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.746105,
+  "lon": -79.561572
+ },
+ {
+  "nombre": "Procacao",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.869791,
+  "lon": -79.489459
+ },
+ {
+  "nombre": "Puerto Gualipe",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.708427,
+  "lon": -79.57772
+ },
+ {
+  "nombre": "Recinto Los Amazu",
+  "tipo": "Recinto",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.601274,
+  "lon": -79.389346
+ },
+ {
+  "nombre": "Rosa Amelia",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.893332,
+  "lon": -79.47425
+ },
+ {
+  "nombre": "Salado Grande",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.797669,
+  "lon": -79.594129
+ },
+ {
+  "nombre": "Salapi Chico",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.798157,
+  "lon": -79.510224
+ },
+ {
+  "nombre": "Salapi Grande",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.747757,
+  "lon": -79.497178
+ },
+ {
+  "nombre": "San Antonio",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.840317,
+  "lon": -79.560853
+ },
+ {
+  "nombre": "San Camilo Chiquito",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.900619,
+  "lon": -79.487161
+ },
+ {
+  "nombre": "San Carlos del Congoma",
+  "tipo": "Recinto",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.58481,
+  "lon": -79.468208
+ },
+ {
+  "nombre": "San Francisco",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.812607,
+  "lon": -79.463124
+ },
+ {
+  "nombre": "San Francisco de Peripa",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.722536,
+  "lon": -79.568911
+ },
+ {
+  "nombre": "San José",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.72254,
+  "lon": -79.501426
+ },
+ {
+  "nombre": "San Vicente de Pocache",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.743209,
+  "lon": -79.581077
+ },
+ {
+  "nombre": "Union Setenta y Uno",
+  "tipo": "Recinto",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.55904,
+  "lon": -79.487091
+ },
+ {
+  "nombre": "Vaca de Monte",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.661246,
+  "lon": -79.525137
+ },
+ {
+  "nombre": "Valdez",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.64314,
+  "lon": -79.442563
+ },
+ {
+  "nombre": "Voluntad de Dios",
+  "tipo": "Recinto",
+  "parroquia": "Patricia Pilar",
+  "lat": -0.59837,
+  "lon": -79.44278
+ },
+ {
+  "nombre": "Zamora",
+  "tipo": "Recinto",
+  "parroquia": "San Jacinto de Buena Fe",
+  "lat": -0.842934,
+  "lon": -79.544756
+ }
+]

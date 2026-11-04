@@ -1,0 +1,196 @@
+rules_version = '2';
+
+// Reglas de SIGER Buena Fe. Pegar en Firebase > Firestore Database > Rules > Publicar.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function sesionIniciada() {
+      return request.auth != null;
+    }
+
+    // Jefes (administradores principales).
+    function esAdministrador() {
+      return sesionIniciada()
+        && request.auth.token.email in [
+          "smaciasc4@uteq.edu.ec",
+          "sistemamonitoreo25@gmail.com"
+        ];
+    }
+
+    // Personal municipal: agregado por un jefe en el panel "Equipo municipal".
+    function esPersonalMunicipal() {
+      return sesionIniciada()
+        && request.auth.token.email != null
+        && exists(/databases/$(database)/documents/personal/$(request.auth.token.email))
+        && get(/databases/$(database)/documents/personal/$(request.auth.token.email)).data.activo == true;
+    }
+
+    // Jefes (esAdministrador) + personal municipal.
+    function esEquipo() {
+      return esAdministrador() || esPersonalMunicipal();
+    }
+
+    function esAutorDelReporte() {
+      return sesionIniciada()
+        && (
+          (
+            resource.data.keys().hasAny(["uidAutor"])
+            && resource.data.uidAutor == request.auth.uid
+          )
+          || (
+            !resource.data.keys().hasAny(["uidAutor"])
+            && request.auth.token.email != null
+            && resource.data.correo == request.auth.token.email
+          )
+        );
+    }
+
+    function estadoPermitido() {
+      return request.resource.data.estado in [
+        "Pendiente",
+        "En revisión",
+        "Atendido",
+        "Descartado"
+      ];
+    }
+
+    // Habitante registrado por el municipio: el ciudadano guardó en
+    // verificados/{uid} la clave de su cédula + nombre, y esa clave sigue
+    // existiendo en la lista de habitantes (si el admin lo quita, ya no reporta).
+    function ciudadanoVerificado() {
+      return sesionIniciada()
+        && exists(/databases/$(database)/documents/verificados/$(request.auth.uid))
+        && exists(/databases/$(database)/documents/habitantes/$(
+             get(/databases/$(database)/documents/verificados/$(request.auth.uid)).data.habitante));
+    }
+
+    function reporteNuevoValido() {
+      return request.resource.data.keys().hasOnly([
+          "correo", "uidAutor", "tipo", "subtipo", "descripcion", "sector",
+          "nivel", "estado", "lat", "lon", "fotos", "fecha", "origenUbicacion"
+        ])
+        && request.resource.data.uidAutor == request.auth.uid
+        && request.resource.data.correo is string
+        && request.resource.data.correo.size() >= 1
+        && request.resource.data.correo.size() <= 254
+        && request.resource.data.tipo in ["Orgánico", "Inorgánico", "Reciclable", "Peligroso"]
+        && request.resource.data.subtipo is string
+        && request.resource.data.descripcion is string
+        && request.resource.data.descripcion.size() >= 3
+        && request.resource.data.descripcion.size() <= 1000
+        && request.resource.data.sector is string
+        && request.resource.data.sector.size() >= 2
+        && request.resource.data.sector.size() <= 200
+        && request.resource.data.nivel in ["Bajo", "Medio", "Alto"]
+        && request.resource.data.estado == "Pendiente"
+        && request.resource.data.lat is number
+        && request.resource.data.lon is number
+        && request.resource.data.lat >= -90
+        && request.resource.data.lat <= 90
+        && request.resource.data.lon >= -180
+        && request.resource.data.lon <= 180
+        && request.resource.data.fotos is list
+        && request.resource.data.fotos.size() <= 6
+        && request.resource.data.fecha is timestamp
+        && (
+          !request.resource.data.keys().hasAny(["origenUbicacion"])
+          || request.resource.data.origenUbicacion in ["gps", "coordenadas", "utm", "mapa"]
+        );
+    }
+
+    match /reportes/{reporteId} {
+      allow read: if true;
+
+      allow create: if sesionIniciada()
+        && reporteNuevoValido()
+        && (esEquipo() || ciudadanoVerificado());
+
+      // Jefes y personal municipal pueden cambiar solo el estado.
+      allow update: if esEquipo()
+        && estadoPermitido()
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["estado"]);
+
+      allow delete: if esAutorDelReporte() || esAdministrador();
+    }
+
+    // Lista de habitantes autorizados. Solo el administrador la ve y la edita.
+    // El id de cada documento es la clave SHA-256 de cédula + nombre.
+    match /habitantes/{clave} {
+      allow read, write: if esAdministrador();
+    }
+
+    // Verificación de cada ciudadano (una por sesión/dispositivo).
+    // Solo se acepta si la clave enviada existe en la lista de habitantes.
+    match /verificados/{uid} {
+      allow read: if sesionIniciada() && (request.auth.uid == uid || esAdministrador());
+
+      allow create, update: if sesionIniciada()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(["habitante", "fecha"])
+        && request.resource.data.habitante is string
+        && request.resource.data.habitante.size() == 64
+        && request.resource.data.fecha == request.time
+        && exists(/databases/$(database)/documents/habitantes/$(request.resource.data.habitante));
+
+      allow delete: if esAdministrador();
+    }
+
+    // Equipo municipal. El id es el correo (en minúsculas).
+    match /personal/{correo} {
+      allow get: if sesionIniciada() && (esAdministrador() || request.auth.token.email == correo);
+      allow list: if esAdministrador();
+      allow create, update: if esAdministrador()
+        && request.resource.data.keys().hasOnly(["email", "nombre", "telefono", "activo", "fecha"])
+        && request.resource.data.email == correo
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 3
+        && request.resource.data.nombre.size() <= 100
+        && request.resource.data.telefono is string
+        && request.resource.data.telefono.size() <= 15
+        && request.resource.data.activo is bool;
+      allow delete: if esAdministrador();
+    }
+
+    // Tareas: un jefe asigna un reporte a una persona del equipo con un plazo.
+    match /tareas/{tareaId} {
+      allow read: if esAdministrador()
+        || (esPersonalMunicipal() && resource.data.asignadoA == request.auth.token.email);
+
+      allow create: if esAdministrador()
+        && request.resource.data.keys().hasOnly([
+          "reporteId", "codigo", "sector", "tipo", "asignadoA", "asignadoNombre", "asignadoPor",
+          "instrucciones", "plazoHoras", "vence", "estado", "respuesta", "notaJefe", "fechaAsignada"
+        ])
+        && request.resource.data.asignadoPor == request.auth.token.email
+        && request.resource.data.estado == "Asignada"
+        && request.resource.data.instrucciones is string
+        && request.resource.data.instrucciones.size() >= 5
+        && request.resource.data.instrucciones.size() <= 1000
+        && request.resource.data.vence is timestamp
+        && request.resource.data.plazoHoras is number
+        && exists(/databases/$(database)/documents/reportes/$(request.resource.data.reporteId))
+        && exists(/databases/$(database)/documents/personal/$(request.resource.data.asignadoA));
+
+      // Jefe: aprobar, devolver (nuevo plazo) o cancelar.
+      allow update: if esAdministrador()
+        && request.resource.data.estado in ["Asignada", "En proceso", "Cumplida", "Devuelta", "Aprobada", "Cancelada"]
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["estado", "notaJefe", "vence", "plazoHoras", "fechaCierre", "respuesta", "fechaRespuesta"]);
+
+      // Persona asignada: empezar o marcar como cumplida con su respuesta.
+      allow update: if esPersonalMunicipal()
+        && resource.data.asignadoA == request.auth.token.email
+        && resource.data.estado in ["Asignada", "En proceso", "Devuelta"]
+        && request.resource.data.estado in ["En proceso", "Cumplida"]
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["estado", "respuesta", "fechaRespuesta"])
+        && (request.resource.data.estado != "Cumplida"
+          || (request.resource.data.respuesta is string
+            && request.resource.data.respuesta.size() >= 5
+            && request.resource.data.respuesta.size() <= 1000));
+
+      allow delete: if esAdministrador();
+    }
+  }
+}
