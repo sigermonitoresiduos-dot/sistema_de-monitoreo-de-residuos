@@ -23,6 +23,7 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link rel="stylesheet" href="agrupacion-reportes.css">
+    <link rel="stylesheet" href="ubicacion-reporte.css">
 </head>
 
 
@@ -105,13 +106,10 @@
 
         <div id="fechaHora" class="info-item"></div>
 
-        <button class="btn-municipio" onclick="mostrarMunicipios()">
-            🏛 GAD del Ecuador
+        <button class="btn-municipio" onclick="mostrarMunicipios()" title="Ver el GAD Municipal de Buena Fe en el mapa">
+            🏛 GAD Municipal de Buena Fe
         </button>
-        <div class="buscador-gad">
-            <input id="buscarGad" type="search" placeholder="Buscar GAD, ej. Pichincha">
-            <button type="button" onclick="buscarGadEnMapa()">Buscar</button>
-        </div>
+        <div class="info-item">📍 Cantón Buena Fe · Los Ríos</div>
 
     </div>
 
@@ -198,6 +196,87 @@ placeholder="Describe el problema"></textarea>
 type="text"
 id="sector"
 placeholder="Ingrese sector o barrio">
+
+<fieldset class="ubicacion-reporte" id="ubicacionReporte" data-modo="gps">
+    <legend class="ubi-cabecera">
+        <span class="ubi-cabecera-icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.6"/></svg>
+        </span>
+        <span class="ubi-cabecera-texto">
+            <strong>Ubicación del residuo</strong>
+            <small>Elige cómo indicar dónde está</small>
+        </span>
+    </legend>
+
+    <div class="ubi-opciones" role="radiogroup" aria-label="Cómo indicar la ubicación">
+        <label class="ubi-opcion">
+            <input type="radio" name="modoUbicacion" value="gps" checked>
+            <span class="ubi-icono" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></svg>
+            </span>
+            <span class="ubi-texto"><strong>Estoy aquí</strong><small>GPS del celular</small></span>
+        </label>
+        <label class="ubi-opcion">
+            <input type="radio" name="modoUbicacion" value="coordenadas">
+            <span class="ubi-icono" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>
+            </span>
+            <span class="ubi-texto"><strong>Coordenadas</strong><small>Las anoté antes</small></span>
+        </label>
+        <label class="ubi-opcion">
+            <input type="radio" name="modoUbicacion" value="mapa">
+            <span class="ubi-icono" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M9 4L3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4z"/><path d="M9 4v13.5M15 6.5V20"/></svg>
+            </span>
+            <span class="ubi-texto"><strong>En el mapa</strong><small>Tocar el punto</small></span>
+        </label>
+    </div>
+
+    <div class="ubi-panel" data-modo="gps">
+        <div class="ubi-nota">
+            <span class="ubi-radar" aria-hidden="true"><span></span></span>
+            <p>Al pulsar <b>Reportar Punto</b> usaremos tu ubicación actual. Ideal si estás junto al residuo.</p>
+        </div>
+    </div>
+
+    <div class="ubi-panel" data-modo="coordenadas" hidden>
+        <div class="ubi-formatos" role="tablist" aria-label="Formato de coordenadas">
+            <button type="button" class="ubi-formato activo" data-formato="decimal" role="tab" aria-selected="true">Google Maps</button>
+            <button type="button" class="ubi-formato" data-formato="utm" role="tab" aria-selected="false">UTM</button>
+        </div>
+        <div data-campos="decimal">
+            <label class="ubi-etiqueta" for="coordTexto">Coordenadas o enlace de Google Maps</label>
+            <div class="ubi-campo">
+                <span class="ubi-campo-icono" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.5 3.9 5.5 3.9 9s-1.3 6.5-3.9 9c-2.6-2.5-3.9-5.5-3.9-9S9.4 5.5 12 3z"/></svg>
+                </span>
+                <input type="text" id="coordTexto" placeholder="-0.89732, -79.49140" autocomplete="off" spellcheck="false" inputmode="text">
+            </div>
+            <details class="ubi-como">
+                <summary>¿Cómo saco las coordenadas?</summary>
+                <ol>
+                    <li>Abre <b>Google Maps</b> en el lugar del residuo.</li>
+                    <li>Mantén presionado el punto hasta que salga un pin rojo.</li>
+                    <li>Toca los números de arriba (ej. <code>-0.89732, -79.49140</code>) para copiarlos.</li>
+                    <li>Pégalos aquí cuando hagas el reporte. También sirve un enlace de ubicación de WhatsApp o Google Maps.</li>
+                </ol>
+            </details>
+        </div>
+        <div data-campos="utm" hidden>
+            <p class="ubi-zona"><span class="ubi-chip">Zona 17 Sur</span><span class="ubi-chip ubi-chip-suave">WGS84</span><span class="ubi-zona-nota">la de Buena Fe</span></p>
+            <div class="ubi-utm">
+                <label class="ubi-etiqueta">Este (X)
+                    <input type="text" id="utmEste" placeholder="667900" inputmode="decimal" autocomplete="off">
+                </label>
+                <label class="ubi-etiqueta">Norte (Y)
+                    <input type="text" id="utmNorte" placeholder="9900780" inputmode="decimal" autocomplete="off">
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="ubiEstado" class="ubi-estado" role="status" aria-live="polite" hidden></div>
+</fieldset>
 
 <label class="titulo-fotos">
 📷 Fotografías del reporte
@@ -629,6 +708,7 @@ Aprende conceptos importantes sobre residuos y cuidado ambiental 🌎
     <script src="vendor/leaflet.markercluster.js"></script>
     <script src="agrupacion-reportes.js"></script>
     <script src="mapa-reportes.js"></script>
+    <script src="ubicacion-reporte.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="fotos-reportes.js"></script>
@@ -927,22 +1007,23 @@ document.getElementById("password")?.addEventListener("keydown", evento => {
 });
 
 
-// MAPA: vista nacional que incluye Ecuador continental y Galápagos.
-const limitesEcuadorGalapagos = L.latLngBounds(
-    [-5.3, -92.7],
-    [1.8, -74.6]
+// MAPA: vista limitada al cantón San Jacinto de Buena Fe (Los Ríos),
+// incluida la parroquia Patricia Pilar al norte.
+const limitesBuenaFe = L.latLngBounds(
+    [-1.00, -79.65],
+    [-0.48, -79.28]
 );
 
 var map = L.map('map', {
     zoomControl: false,
-    minZoom: 4,
+    minZoom: 10,
     maxZoom: 20,
-    maxBounds: limitesEcuadorGalapagos.pad(0.12),
+    maxBounds: limitesBuenaFe.pad(0.25),
     maxBoundsViscosity: 0.9,
     worldCopyJump: false
 });
 
-map.fitBounds(limitesEcuadorGalapagos, { padding: [18, 18], maxZoom: 5 });
+map.fitBounds(limitesBuenaFe, { padding: [18, 18], maxZoom: 12 });
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
 let capaMunicipios = L.layerGroup().addTo(map);
@@ -952,6 +1033,8 @@ const vistaReportesMapa = MapaReportes.crear(map, {
     onGrupo: verGrupoReportes
 });
 let capaRutas = L.layerGroup().addTo(map);
+// Apartado del formulario para elegir GPS, coordenadas escritas o un punto en el mapa.
+const selectorUbicacion = window.UbicacionReporte?.iniciar({ map, limites: limitesBuenaFe }) || null;
 
 // Mapa actualizado (CARTO Voyager): calles más claras para seguir rutas.
 // La clave de basemaps es pública para el navegador y autoriza este dominio en CARTO.
@@ -968,11 +1051,11 @@ const controlEcuador = L.control({ position: 'topright' });
 controlEcuador.onAdd = function() {
     const control = L.DomUtil.create('button', 'control-ecuador');
     control.type = 'button';
-    control.innerHTML = '🇪🇨 Ecuador + Galápagos';
-    control.title = 'Volver a la vista nacional';
+    control.innerHTML = '📍 Buena Fe';
+    control.title = 'Volver a la vista del cantón Buena Fe';
     L.DomEvent.disableClickPropagation(control);
     L.DomEvent.on(control, 'click', () => {
-        map.fitBounds(limitesEcuadorGalapagos, { padding: [18, 18], maxZoom: 5 });
+        map.fitBounds(limitesBuenaFe, { padding: [18, 18], maxZoom: 12 });
     });
     return control;
 };
@@ -1794,7 +1877,7 @@ window.verDetalleReporte = function(id) {
     const reporte = reportesActuales.find(r => r.id === id); if (!reporte || (!esAdministrador() && !esAutorReporte(reporte))) return;
     grupoDetalleAbierto = null;
     const fotos = (reporte.fotos || []).map(url => `<a href="${escaparHTML(url)}" target="_blank" rel="noopener"><img src="${escaparHTML(url)}" alt="Fotografía del reporte"></a>`).join("") || "<p>Este reporte no tiene fotografías.</p>";
-    document.getElementById("contenidoDetalleReporte").innerHTML = `<h2 id="tituloDetalleReporte">${escaparHTML(codigoReporte(reporte))}</h2><p class="detalle-meta">${escaparHTML(reporte.tipo)}${reporte.subtipo ? ` · ${escaparHTML(reporte.subtipo)}` : ""} · ${escaparHTML(reporte.estado)} · Prioridad ${prioridadReporte(reporte)}</p><p>${escaparHTML(reporte.descripcion)}</p><dl><dt>Sector</dt><dd>${escaparHTML(reporte.sector)}</dd><dt>Nivel</dt><dd>${escaparHTML(reporte.nivel)}</dd><dt>Reportado por</dt><dd>${escaparHTML(reporte.correo)}</dd><dt>Fecha</dt><dd>${fechaReporte(reporte).toLocaleString("es-EC")}</dd></dl><div class="galeria-detalle">${fotos}</div>${esAdministrador() ? `<button class="btn-popup btn-ruta" type="button" onclick="cerrarDetalleReporte(); trazarRutaHasta(${Number(reporte.lat)}, ${Number(reporte.lon)})">Cómo llegar a este reporte</button>` : ""}`;
+    document.getElementById("contenidoDetalleReporte").innerHTML = `<h2 id="tituloDetalleReporte">${escaparHTML(codigoReporte(reporte))}</h2><p class="detalle-meta">${escaparHTML(reporte.tipo)}${reporte.subtipo ? ` · ${escaparHTML(reporte.subtipo)}` : ""} · ${escaparHTML(reporte.estado)} · Prioridad ${prioridadReporte(reporte)}</p><p>${escaparHTML(reporte.descripcion)}</p><dl><dt>Sector</dt><dd>${escaparHTML(reporte.sector)}</dd><dt>Nivel</dt><dd>${escaparHTML(reporte.nivel)}</dd><dt>Reportado por</dt><dd>${escaparHTML(reporte.correo)}</dd><dt>Fecha</dt><dd>${fechaReporte(reporte).toLocaleString("es-EC")}</dd><dt>Ubicación</dt><dd>${Number(reporte.lat).toFixed(5)}, ${Number(reporte.lon).toFixed(5)}<br><small class="${reporte.origenUbicacion && reporte.origenUbicacion !== "gps" ? "origen-manual" : "origen-gps"}">${escaparHTML(window.UbicacionReporte?.textoOrigen(reporte.origenUbicacion) || "GPS del celular")}</small></dd></dl><div class="galeria-detalle">${fotos}</div>${esAdministrador() ? `<button class="btn-popup btn-ruta" type="button" onclick="cerrarDetalleReporte(); trazarRutaHasta(${Number(reporte.lat)}, ${Number(reporte.lon)})">Cómo llegar a este reporte</button>` : ""}`;
     document.getElementById("modalReporte").hidden = false;
 };
 window.cerrarDetalleReporte = () => { grupoDetalleAbierto = null; document.getElementById("modalReporte").hidden = true; };
@@ -1836,7 +1919,7 @@ async function subirImagenesASupabase(imagenes) {
     return urls;
 }
 
-window.mostrarConfirmacionReporte = datos => new Promise(resolve => { resolverConfirmacion = resolve; document.getElementById("contenidoConfirmacion").innerHTML = `<p><b>Reportante:</b> ${escaparHTML(datos.reportante)}</p><p><b>Tipo:</b> ${escaparHTML(datos.tipo)}${datos.subtipo ? ` · ${escaparHTML(datos.subtipo)}` : ""}</p><p><b>Sector:</b> ${escaparHTML(datos.sector)}</p><p><b>Nivel:</b> ${escaparHTML(datos.nivel)}</p><p><b>Ubicación:</b> ${datos.lat.toFixed(5)}, ${datos.lon.toFixed(5)}</p><p><b>Fotografías:</b> ${datos.fotos} seleccionada(s)</p>`; document.getElementById("modalConfirmacion").hidden = false; });
+window.mostrarConfirmacionReporte = datos => new Promise(resolve => { resolverConfirmacion = resolve; document.getElementById("contenidoConfirmacion").innerHTML = `<p><b>Reportante:</b> ${escaparHTML(datos.reportante)}</p><p><b>Tipo:</b> ${escaparHTML(datos.tipo)}${datos.subtipo ? ` · ${escaparHTML(datos.subtipo)}` : ""}</p><p><b>Sector:</b> ${escaparHTML(datos.sector)}</p><p><b>Nivel:</b> ${escaparHTML(datos.nivel)}</p><p><b>Ubicación:</b> ${datos.lat.toFixed(5)}, ${datos.lon.toFixed(5)}</p><p><b>Origen del punto:</b> ${escaparHTML(window.UbicacionReporte?.textoOrigen(datos.origenUbicacion) || "GPS del celular")}</p><p><b>Fotografías:</b> ${datos.fotos} seleccionada(s)</p>`; document.getElementById("modalConfirmacion").hidden = false; });
 window.resolverConfirmacionReporte = aceptar => { document.getElementById("modalConfirmacion").hidden = true; resolverConfirmacion?.(aceptar); resolverConfirmacion = null; };
 
 window.obtenerUbicacion = async function() {
@@ -1856,12 +1939,36 @@ window.obtenerUbicacion = async function() {
     if (correoContacto && !/^\S+@\S+\.\S+$/.test(correoContacto)) return alert("El correo es opcional, pero si lo escribes debe ser válido.");
     if (!descripcion || !sector) return alert("Completa la descripción y el sector antes de continuar.");
     try {
-        const posicion = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 15000 }));
-        const lat = posicion.coords.latitude, lon = posicion.coords.longitude;
-        const confirmar = await mostrarConfirmacionReporte({ reportante: identidadReportante, tipo, subtipo, sector, nivel, lat, lon, fotos: imagenesSeleccionadas.length });
+        // Ubicación: punto escrito o tocado en el mapa; si no, el GPS del celular.
+        let manual;
+        try { manual = selectorUbicacion?.puntoManual() || null; }
+        catch (errorUbicacion) {
+            alert(errorUbicacion.message);
+            document.getElementById("ubicacionReporte")?.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+        let lat, lon, origenUbicacion;
+        if (manual) {
+            ({ lat, lon } = manual);
+            origenUbicacion = manual.origen;
+        } else {
+            const posicion = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 15000 }));
+            lat = posicion.coords.latitude; lon = posicion.coords.longitude;
+            origenUbicacion = "gps";
+        }
+        const confirmar = await mostrarConfirmacionReporte({ reportante: identidadReportante, tipo, subtipo, sector, nivel, lat, lon, origenUbicacion, fotos: imagenesSeleccionadas.length });
         if (!confirmar) return;
         const fotos = await subirImagenesASupabase(imagenesSeleccionadas);
-        await addDoc(collection(db, "reportes"), { correo: identidadReportante, uidAutor: usuario.uid, tipo, subtipo, descripcion, sector, nivel, estado: "Pendiente", lat, lon, fotos, fecha: new Date() });
+        const datosReporte = { correo: identidadReportante, uidAutor: usuario.uid, tipo, subtipo, descripcion, sector, nivel, estado: "Pendiente", lat, lon, fotos, fecha: new Date() };
+        try {
+            await addDoc(collection(db, "reportes"), { ...datosReporte, origenUbicacion });
+        } catch (errorGuardado) {
+            // Si las reglas de Firestore aún no permiten el campo nuevo,
+            // se guarda el reporte como antes para no perderlo.
+            if (errorGuardado?.code !== "permission-denied") throw errorGuardado;
+            await addDoc(collection(db, "reportes"), datosReporte);
+        }
+        selectorUbicacion?.reiniciar();
         document.getElementById("progresoCarga").hidden = true;
         imagenesSeleccionadas = []; document.getElementById("vistaPrevia").innerHTML = "";
         document.getElementById("descripcion").value = ""; document.getElementById("sector").value = "";
@@ -1925,12 +2032,6 @@ document.getElementById("consultaReporte").addEventListener("keydown", function(
     if (evento.key === "Enter") {
         evento.preventDefault();
         consultarReporte();
-    }
-});
-document.getElementById("buscarGad")?.addEventListener("keydown", function(evento) {
-    if (evento.key === "Enter") {
-        evento.preventDefault();
-        buscarGadEnMapa();
     }
 });
 
@@ -2354,7 +2455,18 @@ location.reload();
 
 let centrosMostrados = false;
 
-const MUNICIPIOS_GAD = window.MUNICIPIOS_GAD || [];
+// SIGER trabaja solo con el GAD Municipal de Buena Fe: es el único municipio
+// del mapa y la salida del camión en las rutas de recolección.
+const GAD_BUENA_FE = (() => {
+    const base = (window.MUNICIPIOS_GAD || []).find(m => /^buena\s*f[eé]$/i.test(m.nombre.trim()));
+    return {
+        nombre: "Buena Fe",
+        provincia: "Los Ríos",
+        lat: base?.lat ?? -0.8973238232382292,
+        lon: base?.lon ?? -79.4914008955079
+    };
+})();
+const MUNICIPIOS_GAD = [GAD_BUENA_FE];
 
 function municipioMasCercano(lat, lon) {
     let mejor = MUNICIPIOS_GAD[0];
@@ -2408,44 +2520,31 @@ function marcarSalidaMunicipio(municipio) {
     }).bindPopup(`<b>Salida del camión</b><br>GAD Municipal de ${escaparHTML(municipio.nombre)}<br>${municipio.provincia ? `Provincia: ${escaparHTML(municipio.provincia)}<br>` : ""}Municipio a cargo`).addTo(capaRutas);
 }
 
+// Botón del encabezado: muestra el GAD de Buena Fe y centra el mapa en él.
 window.mostrarMunicipios = function(){
-
-    if(centrosMostrados){
-        capaMunicipios.clearLayers();
-        centrosMostrados = false;
-        return;
-    }
-
+    const municipio = GAD_BUENA_FE;
+    capaMunicipios.clearLayers();
     centrosMostrados = true;
-
-    MUNICIPIOS_GAD.forEach(municipio => {
-        L.circleMarker([municipio.lat, municipio.lon], {
-            radius: 5,
-            fillColor: "#16a34a",
-            color: "#fff",
-            weight: 1,
-            fillOpacity: 0.9
-        }).addTo(capaMunicipios).bindPopup(`
-            <b>🏛 GAD Municipal de ${escaparHTML(municipio.nombre)}</b><br>
-            ${municipio.provincia ? `Provincia: ${escaparHTML(municipio.provincia)}<br>` : ""}
-            Entidad responsable de la gestión de residuos sólidos.
-            ${esAdministrador() ? `<br><br><button type="button" onclick="comoLlegar(${municipio.lat},${municipio.lon})">🏛 Ir al Municipio</button>` : "<br><br>"}
-            <a class="enlace-gmaps" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`GAD Municipal de ${municipio.nombre}, ${municipio.provincia || "Ecuador"}`)}" target="_blank" rel="noopener">Abrir en Google Maps</a>`);
-    });
-
-    mostrarToast(`${MUNICIPIOS_GAD.length} GAD municipales del Ecuador cargados`);
-}
-
-window.buscarGadEnMapa = function() {
-    const consulta = document.getElementById("buscarGad")?.value.trim().toLowerCase();
-    if (!consulta) return alert("Escribe el nombre del GAD, por ejemplo Pichincha.");
-    const encontrado = MUNICIPIOS_GAD.find(municipio => municipio.nombre.toLowerCase() === consulta)
-        || MUNICIPIOS_GAD.find(municipio => municipio.nombre.toLowerCase().includes(consulta))
-        || MUNICIPIOS_GAD.find(municipio => (municipio.provincia || "").toLowerCase().includes(consulta));
-    if (!encontrado) return alert("No se encontró ese GAD.");
-    if (!centrosMostrados) window.mostrarMunicipios();
-    map.setView([encontrado.lat, encontrado.lon], 14);
-    mostrarToast(`GAD de ${encontrado.nombre} (${encontrado.provincia || "Ecuador"})`);
+    const marcador = L.marker([municipio.lat, municipio.lon], {
+        icon: L.divIcon({
+            className: "marcador-gad",
+            html: "🏛",
+            iconSize: [28, 28],
+            iconAnchor: [14, 28],
+            popupAnchor: [0, -24]
+        }),
+        zIndexOffset: 600,
+        title: "GAD Municipal de Buena Fe"
+    }).addTo(capaMunicipios).bindPopup(`
+        <b>🏛 GAD Municipal de ${escaparHTML(municipio.nombre)}</b><br>
+        Provincia: ${escaparHTML(municipio.provincia)}<br>
+        Entidad responsable de la gestión de residuos sólidos.
+        ${esAdministrador() ? `<br><br><button type="button" onclick="comoLlegar(${municipio.lat},${municipio.lon})">🏛 Ir al Municipio</button>` : "<br><br>"}
+        <a class="enlace-gmaps" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${municipio.lat},${municipio.lon}`)}" target="_blank" rel="noopener">Abrir en Google Maps</a>`);
+    document.getElementById("map")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    map.setView([municipio.lat, municipio.lon], 16);
+    marcador.openPopup();
+    mostrarToast("GAD Municipal de Buena Fe");
 };
 
 

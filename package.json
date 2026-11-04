@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "node tests/agrupacion-unit.cjs"
+    "test": "node tests/agrupacion-unit.cjs && node tests/ubicacion-unit.cjs"
   },
   "repository": {
     "type": "git",

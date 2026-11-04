@@ -1,0 +1,445 @@
+/* Apartado "Ubicación del residuo" del formulario de reporte.
+   Todo va dentro de .ubicacion-reporte para no afectar otros inputs/botones. */
+.ubicacion-reporte{
+    --ubi-verde:#4ade80;
+    --ubi-verde-fuerte:#22c55e;
+    --ubi-verde-oscuro:#052e16;
+    --ubi-texto:#e2e8f0;
+    --ubi-suave:#94a3b8;
+    --ubi-borde:rgba(148,163,184,.18);
+    --ubi-superficie:rgba(15,23,42,.55);
+    --ubi-mono:ui-monospace,"SF Mono",Consolas,"Roboto Mono",monospace;
+    position:relative;
+    margin:8px 0 18px;
+    padding:14px 14px 14px;
+    border:1px solid rgba(74,222,128,.25);
+    border-radius:20px;
+    background:
+        radial-gradient(120% 70% at 0% 0%,rgba(34,197,94,.16),transparent 60%),
+        linear-gradient(180deg,rgba(15,23,42,.72),rgba(15,23,42,.5));
+    box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.05);
+    min-width:0;
+    color:var(--ubi-texto);
+}
+.ubicacion-reporte svg{
+    width:100%;
+    height:100%;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.9;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+/* Cabecera */
+.ubicacion-reporte .ubi-cabecera{
+    float:left;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    padding:0;
+    margin:0 0 12px;
+}
+.ubicacion-reporte .ubi-cabecera + *{clear:both}
+.ubicacion-reporte .ubi-cabecera-icono{
+    flex:0 0 auto;
+    display:grid;
+    place-items:center;
+    width:36px;
+    height:36px;
+    padding:8px;
+    box-sizing:border-box;
+    border-radius:12px;
+    background:linear-gradient(140deg,#4ade80,#16a34a);
+    color:var(--ubi-verde-oscuro);
+    box-shadow:0 6px 14px rgba(34,197,94,.35);
+}
+.ubicacion-reporte .ubi-cabecera-icono svg{stroke-width:2.2}
+.ubicacion-reporte .ubi-cabecera-texto{display:flex;flex-direction:column;min-width:0}
+.ubicacion-reporte .ubi-cabecera-texto strong{color:var(--ubi-verde);font-size:15px;line-height:1.2}
+.ubicacion-reporte .ubi-cabecera-texto small{color:var(--ubi-suave);font-size:11.5px;margin-top:1px}
+
+/* Tres tarjetas de opción */
+.ubicacion-reporte .ubi-opciones{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:7px;
+}
+.ubicacion-reporte .ubi-opcion{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    min-width:0;
+    padding:12px 4px 10px;
+    border:1.5px solid var(--ubi-borde);
+    border-radius:15px;
+    background:rgba(255,255,255,.04);
+    color:var(--ubi-texto);
+    text-align:center;
+    cursor:pointer;
+    user-select:none;
+    transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;
+    -webkit-tap-highlight-color:transparent;
+}
+.ubicacion-reporte .ubi-opcion input{
+    position:absolute;
+    opacity:0;
+    width:1px !important;
+    height:1px;
+    margin:0 !important;
+    padding:0;
+    pointer-events:none;
+}
+.ubicacion-reporte .ubi-icono{
+    display:grid;
+    place-items:center;
+    width:38px;
+    height:38px;
+    padding:9px;
+    box-sizing:border-box;
+    border-radius:12px;
+    background:rgba(148,163,184,.12);
+    color:#cbd5e1;
+    transition:background .2s,color .2s,transform .25s;
+}
+.ubicacion-reporte .ubi-texto{display:flex;flex-direction:column;gap:2px;min-width:0;width:100%}
+.ubicacion-reporte .ubi-texto strong{font-size:12px;line-height:1.15;white-space:nowrap;letter-spacing:-.1px}
+.ubicacion-reporte .ubi-texto small{font-size:10px;color:var(--ubi-suave);line-height:1.2}
+
+@media (hover:hover){
+    .ubicacion-reporte .ubi-opcion:hover{border-color:rgba(74,222,128,.45);background:rgba(74,222,128,.06);transform:translateY(-2px)}
+    .ubicacion-reporte .ubi-opcion:hover .ubi-icono{color:var(--ubi-verde)}
+}
+.ubicacion-reporte .ubi-opcion:active{transform:scale(.97)}
+.ubicacion-reporte .ubi-opcion:has(input:checked){
+    border-color:var(--ubi-verde);
+    background:linear-gradient(180deg,rgba(34,197,94,.22),rgba(34,197,94,.08));
+    box-shadow:0 0 0 3px rgba(74,222,128,.14),0 10px 20px rgba(0,0,0,.25);
+}
+.ubicacion-reporte .ubi-opcion:has(input:checked) .ubi-icono{
+    background:linear-gradient(140deg,#4ade80,#16a34a);
+    color:var(--ubi-verde-oscuro);
+    transform:scale(1.06);
+}
+.ubicacion-reporte .ubi-opcion:has(input:checked) .ubi-texto small{color:#bbf7d0}
+.ubicacion-reporte .ubi-opcion:has(input:checked)::after{
+    content:"";
+    position:absolute;
+    top:7px;
+    right:7px;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--ubi-verde);
+    box-shadow:0 0 0 3px rgba(74,222,128,.25);
+}
+.ubicacion-reporte .ubi-opcion:has(input:focus-visible){outline:2px solid #86efac;outline-offset:2px}
+
+/* Paneles de cada modo */
+.ubicacion-reporte .ubi-panel{margin-top:12px;animation:ubiAparecer .25s ease}
+.ubicacion-reporte .ubi-panel[hidden]{display:none}
+
+.ubicacion-reporte .ubi-nota{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 12px;
+    border-radius:14px;
+    background:var(--ubi-superficie);
+    border:1px solid var(--ubi-borde);
+}
+.ubicacion-reporte .ubi-nota p{margin:0;font-size:12.5px;line-height:1.45;color:#cbd5e1}
+.ubicacion-reporte .ubi-nota b{color:#fff}
+.ubicacion-reporte .ubi-radar{
+    position:relative;
+    flex:0 0 auto;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--ubi-verde);
+    box-shadow:0 0 0 4px rgba(74,222,128,.18);
+}
+.ubicacion-reporte .ubi-radar span{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:2px solid var(--ubi-verde);
+    animation:ubiRadar 1.8s ease-out infinite;
+}
+
+/* Selector Google Maps / UTM */
+.ubicacion-reporte .ubi-formatos{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:4px;
+    padding:4px;
+    margin-bottom:12px;
+    border-radius:13px;
+    background:rgba(2,6,23,.55);
+    border:1px solid var(--ubi-borde);
+}
+.ubicacion-reporte .ubi-formato{
+    width:auto !important;
+    margin:0 !important;
+    padding:8px 6px;
+    border:0;
+    border-radius:10px;
+    background:transparent;
+    color:var(--ubi-suave);
+    font-size:13px;
+    font-weight:700;
+    box-shadow:none;
+    transition:background .2s,color .2s,box-shadow .2s;
+}
+.ubicacion-reporte .ubi-formato:hover{transform:none;background:rgba(255,255,255,.06);color:var(--ubi-texto)}
+.ubicacion-reporte .ubi-formato.activo,
+.ubicacion-reporte .ubi-formato.activo:hover{
+    background:linear-gradient(140deg,#4ade80,#22c55e);
+    color:var(--ubi-verde-oscuro);
+    box-shadow:0 4px 12px rgba(34,197,94,.35);
+}
+
+/* Campos */
+.ubicacion-reporte .ubi-etiqueta{display:block;font-size:12px;font-weight:600;color:#cbd5e1}
+.ubicacion-reporte .ubi-campo{position:relative;margin:6px 0 10px}
+.ubicacion-reporte .ubi-campo-icono{
+    position:absolute;
+    left:12px;
+    top:50%;
+    width:18px;
+    height:18px;
+    transform:translateY(-50%);
+    color:var(--ubi-suave);
+    pointer-events:none;
+    transition:color .2s;
+}
+.ubicacion-reporte input[type="text"]{
+    margin:6px 0 0;
+    padding:12px;
+    border:1.5px solid var(--ubi-borde);
+    border-radius:12px;
+    background:rgba(2,6,23,.45);
+    font-family:var(--ubi-mono);
+    font-size:15px;
+    letter-spacing:.2px;
+    transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.ubicacion-reporte .ubi-campo input[type="text"]{margin:0;padding-left:40px}
+.ubicacion-reporte input[type="text"]::placeholder{color:#64748b}
+.ubicacion-reporte input[type="text"]:focus{
+    border-color:var(--ubi-verde);
+    background:rgba(2,6,23,.65);
+    box-shadow:0 0 0 3px rgba(74,222,128,.18);
+}
+.ubicacion-reporte .ubi-campo:focus-within .ubi-campo-icono{color:var(--ubi-verde)}
+.ubicacion-reporte[data-estado="error"] input[type="text"]{border-color:rgba(248,113,113,.7)}
+.ubicacion-reporte[data-estado="error"] .ubi-campo-icono{color:#f87171}
+.ubicacion-reporte[data-estado="ok"] input[type="text"]{border-color:rgba(74,222,128,.6)}
+
+.ubicacion-reporte .ubi-zona{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 4px}
+.ubicacion-reporte .ubi-chip{
+    padding:3px 9px;
+    border-radius:99px;
+    background:rgba(74,222,128,.16);
+    border:1px solid rgba(74,222,128,.35);
+    color:#bbf7d0;
+    font-size:11px;
+    font-weight:700;
+}
+.ubicacion-reporte .ubi-chip-suave{background:rgba(148,163,184,.12);border-color:var(--ubi-borde);color:#cbd5e1}
+.ubicacion-reporte .ubi-zona-nota{font-size:11px;color:var(--ubi-suave)}
+.ubicacion-reporte .ubi-utm{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ubicacion-reporte .ubi-utm .ubi-etiqueta{margin-top:6px}
+
+/* Ayuda desplegable */
+.ubicacion-reporte .ubi-como{
+    border-radius:12px;
+    background:rgba(2,6,23,.3);
+    border:1px dashed rgba(74,222,128,.25);
+    font-size:12px;
+    color:#cbd5e1;
+}
+.ubicacion-reporte .ubi-como summary{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 11px;
+    cursor:pointer;
+    color:#86efac;
+    font-weight:600;
+    list-style:none;
+}
+.ubicacion-reporte .ubi-como summary::-webkit-details-marker{display:none}
+.ubicacion-reporte .ubi-como summary::before{
+    content:"?";
+    display:grid;
+    place-items:center;
+    flex:0 0 18px;
+    height:18px;
+    border-radius:50%;
+    background:rgba(74,222,128,.18);
+    font-size:11px;
+    font-weight:800;
+}
+.ubicacion-reporte .ubi-como summary::after{content:"›";margin-left:auto;font-size:18px;line-height:1;transition:transform .2s}
+.ubicacion-reporte .ubi-como[open] summary::after{transform:rotate(90deg)}
+.ubicacion-reporte .ubi-como ol{
+    margin:0;
+    padding:0 12px 11px 30px;
+    line-height:1.55;
+}
+.ubicacion-reporte .ubi-como li::marker{color:var(--ubi-verde);font-weight:700}
+.ubicacion-reporte .ubi-como code{padding:1px 5px;border-radius:5px;background:rgba(2,6,23,.7);color:#bbf7d0;font-family:var(--ubi-mono);font-size:11px}
+
+/* Tarjeta de estado: listo / error / instrucción */
+.ubicacion-reporte .ubi-estado{
+    margin-top:12px;
+    padding:12px;
+    border-radius:15px;
+    font-size:12.5px;
+    line-height:1.45;
+    animation:ubiAparecer .25s ease;
+}
+.ubicacion-reporte .ubi-estado[hidden]{display:none}
+.ubicacion-reporte .ubi-estado-cab{display:flex;align-items:center;gap:10px}
+.ubicacion-reporte .ubi-estado-cab strong{display:block;font-size:13.5px;line-height:1.2}
+.ubicacion-reporte .ubi-estado-cab small{display:block;font-size:11px;opacity:.8}
+.ubicacion-reporte .ubi-estado-icono{
+    flex:0 0 auto;
+    display:grid;
+    place-items:center;
+    width:30px;
+    height:30px;
+    padding:6px;
+    box-sizing:border-box;
+    border-radius:50%;
+}
+.ubicacion-reporte .ubi-estado-icono svg{stroke-width:2.6}
+.ubicacion-reporte .ubi-estado-texto{margin:9px 0 0}
+
+.ubicacion-reporte .ubi-estado-ok{background:linear-gradient(160deg,rgba(22,101,52,.55),rgba(20,83,45,.35));border:1px solid rgba(74,222,128,.45);color:#dcfce7}
+.ubicacion-reporte .ubi-estado-ok .ubi-estado-icono{background:var(--ubi-verde-fuerte);color:var(--ubi-verde-oscuro);animation:ubiSalto .4s cubic-bezier(.3,1.6,.5,1)}
+.ubicacion-reporte .ubi-estado-error{background:linear-gradient(160deg,rgba(127,29,29,.55),rgba(69,10,10,.4));border:1px solid rgba(248,113,113,.5);color:#fee2e2}
+.ubicacion-reporte .ubi-estado-error .ubi-estado-icono{background:#ef4444;color:#fff}
+.ubicacion-reporte .ubi-estado-info{background:linear-gradient(160deg,rgba(30,58,138,.5),rgba(23,37,84,.35));border:1px solid rgba(96,165,250,.45);color:#dbeafe}
+.ubicacion-reporte .ubi-estado-info .ubi-estado-icono{background:#3b82f6;color:#fff}
+.ubicacion-reporte .ubi-icono-toque{animation:ubiToque 1.6s ease-in-out infinite}
+.ubicacion-reporte .ubi-icono-toque svg{stroke-width:2}
+
+.ubicacion-reporte .ubi-datos{display:grid;gap:6px;margin:11px 0 0}
+.ubicacion-reporte .ubi-datos div{
+    padding:7px 10px;
+    border-radius:10px;
+    background:rgba(2,6,23,.38);
+    border:1px solid rgba(74,222,128,.16);
+}
+.ubicacion-reporte .ubi-datos dt{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#86efac}
+.ubicacion-reporte .ubi-datos dd{margin:2px 0 0;font-family:var(--ubi-mono);font-size:13px;color:#fff;overflow-wrap:anywhere}
+
+.ubicacion-reporte .ubi-aviso{
+    display:flex;
+    gap:7px;
+    margin:8px 0 0;
+    padding:7px 9px;
+    border-radius:10px;
+    background:rgba(250,204,21,.1);
+    border:1px solid rgba(250,204,21,.28);
+    color:#fde68a;
+    font-size:11.5px;
+}
+.ubicacion-reporte .ubi-aviso svg{flex:0 0 15px;width:15px;height:15px;margin-top:1px}
+
+.ubicacion-reporte .ubi-ver{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    width:100% !important;
+    margin:10px 0 0 !important;
+    padding:9px 12px;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:11px;
+    background:rgba(255,255,255,.08);
+    color:#fff;
+    font-size:12.5px;
+    box-shadow:none;
+}
+.ubicacion-reporte .ubi-ver svg{width:16px;height:16px}
+.ubicacion-reporte .ubi-ver:hover{transform:none;background:rgba(255,255,255,.16)}
+
+/* Animaciones */
+@keyframes ubiAparecer{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@keyframes ubiRadar{from{transform:scale(1);opacity:.9}to{transform:scale(2.8);opacity:0}}
+@keyframes ubiSalto{from{transform:scale(.4)}to{transform:scale(1)}}
+@keyframes ubiToque{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* Pin del punto en el mapa */
+.ubi-pin{background:none;border:0}
+.ubi-pin-cabeza{
+    position:absolute;
+    left:50%;
+    bottom:3px;
+    width:30px;
+    height:40px;
+    margin-left:-15px;
+    filter:drop-shadow(0 5px 5px rgba(0,0,0,.4));
+    animation:ubiCaer .45s cubic-bezier(.3,1.6,.5,1);
+}
+.ubi-pin-cabeza svg{width:100%;height:100%;display:block}
+.ubi-pin-cabeza path{fill:#ef4444;stroke:#fff;stroke-width:2}
+.ubi-pin-cabeza circle{fill:#fff}
+.ubi-pin-onda{
+    position:absolute;
+    left:50%;
+    bottom:0;
+    width:18px;
+    height:8px;
+    margin-left:-9px;
+    border-radius:50%;
+    background:rgba(239,68,68,.55);
+    animation:ubiOnda 1.6s ease-out infinite;
+}
+@keyframes ubiCaer{from{transform:translateY(-26px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ubiOnda{from{transform:scale(.6);opacity:.9}to{transform:scale(3.2);opacity:0}}
+
+/* Cursor de mira cuando se elige "En el mapa" */
+.leaflet-container.ubi-modo-mapa{cursor:crosshair}
+.leaflet-container.ubi-modo-mapa .leaflet-interactive{cursor:pointer}
+
+/* Detalle del reporte (administrador) */
+.origen-manual{color:#fde68a}
+.origen-gps{color:#86efac}
+
+/* Computadora: el panel del formulario es angosto (320 px), se compacta */
+@media (min-width:769px){
+    .ubicacion-reporte{padding:13px 8px}
+    .ubicacion-reporte .ubi-opciones{gap:5px}
+    .ubicacion-reporte .ubi-opcion{padding:11px 1px 9px}
+    .ubicacion-reporte .ubi-texto strong{font-size:11px;letter-spacing:-.25px}
+    .ubicacion-reporte .ubi-texto small{font-size:9.5px}
+}
+
+/* Teléfono: tarjetas y textos un poco más grandes para tocar con el dedo */
+@media (max-width:768px){
+    .ubicacion-reporte{padding:16px 14px}
+    .ubicacion-reporte .ubi-opciones{gap:9px}
+    .ubicacion-reporte .ubi-opcion{padding:14px 6px 12px;min-height:96px}
+    .ubicacion-reporte .ubi-icono{width:42px;height:42px;padding:10px}
+    .ubicacion-reporte .ubi-texto strong{font-size:13px}
+    .ubicacion-reporte .ubi-texto small{font-size:11px}
+    .ubicacion-reporte .ubi-formato{padding:10px 6px;font-size:14px}
+    .ubicacion-reporte input[type="text"]{font-size:16px;padding-top:13px;padding-bottom:13px}
+}
+@media (max-width:360px){
+    .ubicacion-reporte{padding:14px 10px}
+    .ubicacion-reporte .ubi-opciones{gap:6px}
+    .ubicacion-reporte .ubi-texto small{display:none}
+    .ubicacion-reporte .ubi-opcion{min-height:0}
+    .ubicacion-reporte .ubi-utm{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+    .ubicacion-reporte *,.ubi-pin-cabeza,.ubi-pin-onda{animation:none !important;transition:none !important}
+}

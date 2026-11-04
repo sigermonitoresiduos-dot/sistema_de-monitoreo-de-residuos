@@ -1,4 +1,4 @@
-const CACHE = "siger-app-v9";
+const CACHE = "siger-app-v11";
 const ASSETS = [
     "./",
     "./index.html",
@@ -7,6 +7,8 @@ const ASSETS = [
     "./fotos-reportes.js",
     "./agrupacion-reportes.js",
     "./mapa-reportes.js",
+    "./ubicacion-reporte.js",
+    "./ubicacion-reporte.css",
     "./agrupacion-reportes.css",
     "./vendor/leaflet.markercluster.js",
     "./vendor/MarkerCluster.css",
