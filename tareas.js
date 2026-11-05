@@ -309,11 +309,23 @@
 
         // Crea la cuenta (si no existe) y envía el correo para crear contraseña.
         async function textoInvitacion(email, nombre, reenvio = false) {
-            if (!dep.invitar) return `✔ ${esc(nombre)} agregado.`;
+            const tarjeta = (tipo, icono, titulo, cuerpo) => `<div class="aviso-acceso ${tipo}">
+                <span class="aviso-icono" aria-hidden="true">${icono}</span>
+                <div class="aviso-cuerpo"><strong>${titulo}</strong>${cuerpo}</div>
+            </div>`;
+            if (!dep.invitar) return tarjeta('ok', '✔', `${esc(nombre)} agregado al equipo`, '');
             try {
                 const r = await dep.invitar(email);
-                const inicio = reenvio ? `📧 Correo de acceso reenviado a ${esc(nombre)}.` : `✔ ${esc(nombre)} ${r.cuentaNueva ? 'agregado' : 'agregado (ya tenía cuenta)'}.`;
-                return `${inicio} Le enviamos a <b>${esc(email)}</b> un correo para crear su contraseña <small>(si no lo ve, que revise <b>Spam</b> o <b>Promociones</b>)</small>. Después entra por “Acceso administrador”.`;
+                const titulo = reenvio ? 'Correo de acceso reenviado'
+                    : r.cuentaNueva ? `${esc(nombre)} agregado al equipo` : `${esc(nombre)} agregado (ya tenía cuenta)`;
+                return tarjeta('ok', '📧', titulo, `
+                    <span class="aviso-para">Enviado a</span>
+                    <span class="aviso-correo">${esc(email)}</span>
+                    <ol class="aviso-pasos">
+                        <li>Abre el correo de Firebase y crea tu contraseña.</li>
+                        <li>Entra por <b>Acceso administrador</b> con ese correo.</li>
+                    </ol>
+                    <small class="aviso-nota">¿No llegó? Revisa <b>Spam</b> o <b>Promociones</b>.</small>`);
             } catch (error) {
                 const motivos = {
                     'auth/invalid-email': 'el correo no es válido',
@@ -321,7 +333,9 @@
                     'auth/too-many-requests': 'se hicieron demasiados intentos; espera unos minutos',
                     'auth/network-request-failed': 'no hay conexión a internet'
                 };
-                return `${reenvio ? `⚠️ No se pudo reenviar el correo a ${esc(nombre)}` : `✔ ${esc(nombre)} agregado, pero no se pudo enviar el correo de acceso`} (${esc(motivos[error?.code] || error?.message || 'error desconocido')}). Usa el botón 📧 de su tarjeta para reintentar.`;
+                return tarjeta('error', '⚠️', reenvio ? 'No se pudo reenviar el correo' : `${esc(nombre)} agregado, pero falta el correo`, `
+                    <span class="aviso-correo">${esc(email)}</span>
+                    <small class="aviso-nota">Motivo: ${esc(motivos[error?.code] || error?.message || 'error desconocido')}. Pulsa <b>📧 Acceso</b> en su tarjeta para reintentar.</small>`);
             }
         }
 
@@ -334,7 +348,7 @@
             const html = await textoInvitacion(email, nombreBonito(p.nombre), true);
             if (estado) estado.innerHTML = html;
             boton.disabled = false;
-            mostrarToast(html.includes('No se pudo') ? 'No se pudo enviar el correo' : `📧 Correo de acceso enviado a ${email}`);
+            mostrarToast(html.includes('aviso-acceso error') ? 'No se pudo enviar el correo' : `📧 Correo de acceso enviado a ${email}`);
         }
 
         // Corrige nombre, celular o correo de una persona del equipo.

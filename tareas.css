@@ -389,3 +389,48 @@ textarea.tarea-campo { resize: vertical; min-height: 64px; }
     .persona .persona-botones { justify-content: stretch; }
     .persona .persona-icono { flex: 1; justify-content: center; }
 }
+
+/* Aviso al enviar el correo de acceso al personal */
+#estadoPersonal:empty { display: none; }
+.aviso-acceso {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 10px;
+    margin: 10px 0 4px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(34, 197, 94, .08);
+    border: 1px solid rgba(74, 222, 128, .35);
+    color: #e2e8f0;
+    font-size: 13px;
+    line-height: 1.45;
+}
+.aviso-acceso.error { background: rgba(239, 68, 68, .08); border-color: rgba(239, 68, 68, .45); }
+.aviso-icono {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    background: rgba(34, 197, 94, .18);
+}
+.aviso-acceso.error .aviso-icono { background: rgba(239, 68, 68, .18); }
+.aviso-cuerpo { display: grid; gap: 4px; min-width: 0; }
+.aviso-cuerpo > strong { color: #bbf7d0; font-size: 14px; line-height: 1.3; }
+.aviso-acceso.error .aviso-cuerpo > strong { color: #fecaca; }
+.aviso-para { color: #94a3b8; font-size: 11.5px; text-transform: uppercase; letter-spacing: .4px; margin-top: 2px; }
+.aviso-correo {
+    display: block;
+    padding: 6px 9px;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, .7);
+    border: 1px solid rgba(148, 163, 184, .2);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12.5px;
+    color: #f1f5f9;
+    overflow-wrap: anywhere;
+}
+.aviso-pasos { margin: 4px 0 0; padding-left: 20px; display: grid; gap: 2px; }
+.aviso-pasos li::marker { color: #4ade80; font-weight: 800; }
+.aviso-nota { color: #94a3b8; font-size: 12px; }
