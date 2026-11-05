@@ -307,3 +307,50 @@ textarea.tarea-campo { resize: vertical; min-height: 64px; }
     .plazo-unidad button { padding: 10px 14px !important; }
     .plazo-rapidos button { padding: 7px 12px !important; font-size: 13px !important; }
 }
+
+/* Botones de editar / quitar y formulario de edición del equipo */
+.persona-botones {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    gap: 6px;
+}
+.persona .persona-quitar { position: static; }
+.persona-icono {
+    width: 28px !important;
+    height: 28px;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: grid !important;
+    place-items: center;
+    font-size: 13px !important;
+    line-height: 1;
+    box-shadow: none !important;
+}
+.persona-editar-btn {
+    background: rgba(59, 130, 246, .12) !important;
+    color: #bfdbfe !important;
+    border: 1px solid rgba(59, 130, 246, .4) !important;
+}
+.persona-editar-btn:hover { background: rgba(59, 130, 246, .25) !important; }
+.persona.persona-editar {
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: start;
+    padding-right: 11px;
+    border-color: rgba(59, 130, 246, .5);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+}
+.persona-editar .persona-avatar { background: linear-gradient(135deg, #60a5fa, #2563eb); font-size: 16px; }
+.persona-editar .tarea-campo { margin: 0 0 4px !important; }
+.persona-acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+.persona-aviso { color: #fca5a5; font-size: 12px; min-height: 0; }
+.persona-aviso:empty { display: none; }
+@media (max-width: 768px) {
+    .persona-icono { width: 34px !important; height: 34px; }
+    .persona.persona-editar { grid-template-columns: 1fr; }
+    .persona-editar .persona-avatar { display: none; }
+    .persona-editar .tarea-campo { font-size: 16px; }
+}

@@ -67,6 +67,7 @@
         let cancelar = [];
         let reloj = null;
         let filtro = 'activas';
+        let editando = null; // correo de la persona del equipo que se está editando
         let primeraCarga = true;
         let previos = new Map();
         const avisadasVencidas = new Set();
@@ -235,8 +236,29 @@
             const lista = document.getElementById('listaPersonal');
             if (!lista) return;
             if (error) { lista.innerHTML = `<li class="tarea-vacia">${error.code === 'permission-denied' ? 'Falta publicar las reglas nuevas de Firestore.' : 'No se pudo cargar el equipo.'}</li>`; return; }
+            // No se repinta mientras alguien escribe en el formulario de edición.
+            const enEdicion = lista.querySelector('.persona-editar');
+            if (editando && enEdicion?.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') return;
             lista.innerHTML = personal.map(p => {
                 const nombre = nombreBonito(p.nombre);
+                if (editando === p.email) {
+                    return `<li class="persona persona-editar" data-editar="${esc(p.email)}">
+                        <span class="persona-avatar" aria-hidden="true">✏️</span>
+                        <span class="persona-datos">
+                            <label class="tarea-etq">Nombre y apellido</label>
+                            <input type="text" class="tarea-campo" data-campo="nombre" value="${esc(nombre)}" maxlength="100">
+                            <label class="tarea-etq">Correo</label>
+                            <input type="email" class="tarea-campo" data-campo="email" value="${esc(p.email)}" autocomplete="off">
+                            <label class="tarea-etq">Celular para WhatsApp (opcional)</label>
+                            <input type="tel" class="tarea-campo" data-campo="telefono" value="${esc(p.telefono || '')}" inputmode="numeric" placeholder="09...">
+                            <span class="persona-acciones">
+                                <button type="button" class="tarea-btn tarea-ok" data-guardar-personal="${esc(p.email)}">Guardar</button>
+                                <button type="button" class="tarea-btn tarea-sec" data-cancelar-edicion>Cancelar</button>
+                            </span>
+                            <small class="persona-aviso" data-aviso></small>
+                        </span>
+                    </li>`;
+                }
                 const activas = tareas.filter(t => t.asignadoA === p.email && ACTIVAS.includes(t.estado));
                 const vencidas = activas.filter(vencida).length;
                 const iniciales = nombre.split(' ').filter(Boolean).slice(0, 2).map(x => x[0]).join('').toUpperCase() || '?';
@@ -251,7 +273,10 @@
                         <span class="persona-correo">${esc(p.email)}</span>
                         <span class="persona-extra">${tel}${carga}</span>
                     </span>
-                    <button type="button" class="persona-quitar" data-quitar-personal="${esc(p.email)}" title="Quitar del equipo" aria-label="Quitar a ${esc(nombre)} del equipo">✕</button>
+                    <span class="persona-botones">
+                        <button type="button" class="persona-icono persona-editar-btn" data-editar-personal="${esc(p.email)}" title="Editar datos" aria-label="Editar datos de ${esc(nombre)}">✏️</button>
+                        <button type="button" class="persona-icono persona-quitar" data-quitar-personal="${esc(p.email)}" title="Quitar del equipo" aria-label="Quitar a ${esc(nombre)} del equipo">✕</button>
+                    </span>
                 </li>`;
             }).join('') || '<li class="tarea-vacia">Aún no agregas personal.</li>';
         }
@@ -280,12 +305,58 @@
             }
         }
 
+        // Corrige nombre, celular o correo de una persona del equipo.
+        async function guardarEdicion(emailAnterior, boton) {
+            const caja = document.querySelector(`[data-editar="${CSS.escape(emailAnterior)}"]`);
+            const aviso = caja?.querySelector('[data-aviso]');
+            const decir = t => { if (aviso) aviso.textContent = t; };
+            const p = personal.find(x => x.email === emailAnterior);
+            if (!caja || !p) return;
+            const nombre = nombreBonito(caja.querySelector('[data-campo="nombre"]').value);
+            const email = caja.querySelector('[data-campo="email"]').value.trim().toLowerCase();
+            const telefono = caja.querySelector('[data-campo="telefono"]').value.replace(/\D/g, '');
+            if (nombre.length < 3) return decir('Escribe el nombre completo.');
+            if (!/^\S+@\S+\.\S+$/.test(email)) return decir('Escribe un correo válido.');
+            if (telefono && !/^0?9\d{8}$/.test(telefono)) return decir('El celular debe tener 10 dígitos (09...).');
+            const cambiaCorreo = email !== emailAnterior;
+            if (cambiaCorreo) {
+                if (dep.correosJefes.includes(email)) return decir('Ese correo ya es de un jefe.');
+                if (personal.some(x => x.email === email)) return decir('Ese correo ya está en el equipo.');
+                if (tareas.some(t => t.asignadoA === emailAnterior && ACTIVAS.includes(t.estado))) {
+                    return decir('Tiene tareas en curso con el correo anterior. Termínalas o cancélalas antes de cambiar el correo.');
+                }
+                if (!confirm(`Vas a cambiar el correo a ${email}.\n\nRecuerda crear (o cambiar) su cuenta en Firebase → Authentication con ese mismo correo; con el correo anterior ya no podrá entrar.`)) return;
+            }
+            boton.disabled = true;
+            try {
+                const datos = { email, nombre, telefono, activo: true, fecha: p.fecha || fs.serverTimestamp() };
+                if (cambiaCorreo) {
+                    await fs.setDoc(fs.doc(db, 'personal', email), datos);
+                    await fs.deleteDoc(fs.doc(db, 'personal', emailAnterior));
+                } else {
+                    await fs.setDoc(fs.doc(db, 'personal', email), datos);
+                }
+                editando = null;
+                document.activeElement?.blur?.();
+                pintarEquipo();
+                mostrarToast(`✔ Datos de ${nombre} actualizados`);
+            } catch (error) {
+                boton.disabled = false;
+                decir(error?.code === 'permission-denied' ? 'Firebase no permitió guardar el cambio.' : 'No se pudo guardar: ' + (error?.message || error));
+            }
+        }
+
         function conectarEquipo() {
             const panel = document.getElementById('panelEquipo');
             if (!panel || panel.dataset.listo) return;
             panel.dataset.listo = '1';
             document.getElementById('btnAgregarPersonal')?.addEventListener('click', agregarPersonal);
             panel.addEventListener('click', async e => {
+                const ed = e.target.closest('[data-editar-personal]');
+                if (ed) { editando = ed.dataset.editarPersonal; pintarEquipo(); panel.querySelector('.persona-editar input')?.focus(); return; }
+                if (e.target.closest('[data-cancelar-edicion]')) { editando = null; pintarEquipo(); return; }
+                const g = e.target.closest('[data-guardar-personal]');
+                if (g) { guardarEdicion(g.dataset.guardarPersonal, g); return; }
                 const b = e.target.closest('[data-quitar-personal]');
                 if (!b) return;
                 const p = personal.find(x => x.email === b.dataset.quitarPersonal);
