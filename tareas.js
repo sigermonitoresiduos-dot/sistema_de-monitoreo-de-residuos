@@ -274,8 +274,9 @@
                         <span class="persona-extra">${tel}${carga}</span>
                     </span>
                     <span class="persona-botones">
-                        <button type="button" class="persona-icono persona-editar-btn" data-editar-personal="${esc(p.email)}" title="Editar datos" aria-label="Editar datos de ${esc(nombre)}">✏️</button>
-                        <button type="button" class="persona-icono persona-quitar" data-quitar-personal="${esc(p.email)}" title="Quitar del equipo" aria-label="Quitar a ${esc(nombre)} del equipo">✕</button>
+                        <button type="button" class="persona-icono persona-editar-btn" data-editar-personal="${esc(p.email)}" title="Editar datos" aria-label="Editar datos de ${esc(nombre)}">✏️ Editar</button>
+                        <button type="button" class="persona-icono persona-correo-btn" data-reenviar-acceso="${esc(p.email)}" title="Reenviar correo para crear o cambiar su contraseña" aria-label="Reenviar acceso a ${esc(nombre)}">📧 Acceso</button>
+                        <button type="button" class="persona-icono persona-quitar" data-quitar-personal="${esc(p.email)}" title="Quitar del equipo" aria-label="Quitar a ${esc(nombre)} del equipo">✕ Quitar</button>
                     </span>
                 </li>`;
             }).join('') || '<li class="tarea-vacia">Aún no agregas personal.</li>';
@@ -299,10 +300,41 @@
             try {
                 await fs.setDoc(fs.doc(db, 'personal', email), { email, nombre, telefono, activo: true, fecha: fs.serverTimestamp() });
                 ['personalCorreo', 'personalNombre', 'personalTelefono'].forEach(id => { document.getElementById(id).value = ''; });
-                estado.innerHTML = `✔ ${esc(nombre)} agregado. <b>Falta su cuenta:</b> en Firebase → Authentication → Agregar usuario, con el correo <b>${esc(email)}</b> y una contraseña. Luego entra por “Acceso administrador”.`;
+                estado.textContent = `✔ ${nombre} agregado. Enviando su correo de acceso...`;
+                estado.innerHTML = await textoInvitacion(email, nombre);
             } catch (error) {
                 estado.textContent = error?.code === 'permission-denied' ? 'Firebase no lo permitió: falta publicar las reglas nuevas.' : 'No se pudo agregar: ' + (error?.message || error);
             }
+        }
+
+        // Crea la cuenta (si no existe) y envía el correo para crear contraseña.
+        async function textoInvitacion(email, nombre, reenvio = false) {
+            if (!dep.invitar) return `✔ ${esc(nombre)} agregado.`;
+            try {
+                const r = await dep.invitar(email);
+                const inicio = reenvio ? `📧 Correo de acceso reenviado a ${esc(nombre)}.` : `✔ ${esc(nombre)} ${r.cuentaNueva ? 'agregado' : 'agregado (ya tenía cuenta)'}.`;
+                return `${inicio} Le enviamos a <b>${esc(email)}</b> un correo para crear su contraseña <small>(si no lo ve, que revise <b>Spam</b> o <b>Promociones</b>)</small>. Después entra por “Acceso administrador”.`;
+            } catch (error) {
+                const motivos = {
+                    'auth/invalid-email': 'el correo no es válido',
+                    'auth/operation-not-allowed': 'el inicio con correo y contraseña está desactivado en Firebase',
+                    'auth/too-many-requests': 'se hicieron demasiados intentos; espera unos minutos',
+                    'auth/network-request-failed': 'no hay conexión a internet'
+                };
+                return `${reenvio ? `⚠️ No se pudo reenviar el correo a ${esc(nombre)}` : `✔ ${esc(nombre)} agregado, pero no se pudo enviar el correo de acceso`} (${esc(motivos[error?.code] || error?.message || 'error desconocido')}). Usa el botón 📧 de su tarjeta para reintentar.`;
+            }
+        }
+
+        async function reenviarAcceso(email, boton) {
+            const p = personal.find(x => x.email === email);
+            if (!p) return;
+            const estado = document.getElementById('estadoPersonal');
+            boton.disabled = true;
+            if (estado) estado.textContent = `Enviando correo de acceso a ${email}...`;
+            const html = await textoInvitacion(email, nombreBonito(p.nombre), true);
+            if (estado) estado.innerHTML = html;
+            boton.disabled = false;
+            mostrarToast(html.includes('No se pudo') ? 'No se pudo enviar el correo' : `📧 Correo de acceso enviado a ${email}`);
         }
 
         // Corrige nombre, celular o correo de una persona del equipo.
@@ -325,7 +357,7 @@
                 if (tareas.some(t => t.asignadoA === emailAnterior && ACTIVAS.includes(t.estado))) {
                     return decir('Tiene tareas en curso con el correo anterior. Termínalas o cancélalas antes de cambiar el correo.');
                 }
-                if (!confirm(`Vas a cambiar el correo a ${email}.\n\nRecuerda crear (o cambiar) su cuenta en Firebase → Authentication con ese mismo correo; con el correo anterior ya no podrá entrar.`)) return;
+                if (!confirm(`Vas a cambiar el correo a ${email}.\n\nSe le enviará a ese correo un enlace para crear su contraseña. Con el correo anterior ya no podrá entrar.`)) return;
             }
             boton.disabled = true;
             try {
@@ -340,6 +372,11 @@
                 document.activeElement?.blur?.();
                 pintarEquipo();
                 mostrarToast(`✔ Datos de ${nombre} actualizados`);
+                // Con correo nuevo, se le crea la cuenta y se le envía el acceso.
+                if (cambiaCorreo) {
+                    const estado = document.getElementById('estadoPersonal');
+                    if (estado) estado.innerHTML = await textoInvitacion(email, nombre);
+                }
             } catch (error) {
                 boton.disabled = false;
                 decir(error?.code === 'permission-denied' ? 'Firebase no permitió guardar el cambio.' : 'No se pudo guardar: ' + (error?.message || error));
@@ -357,6 +394,8 @@
                 if (e.target.closest('[data-cancelar-edicion]')) { editando = null; pintarEquipo(); return; }
                 const g = e.target.closest('[data-guardar-personal]');
                 if (g) { guardarEdicion(g.dataset.guardarPersonal, g); return; }
+                const re = e.target.closest('[data-reenviar-acceso]');
+                if (re) { reenviarAcceso(re.dataset.reenviarAcceso, re); return; }
                 const b = e.target.closest('[data-quitar-personal]');
                 if (!b) return;
                 const p = personal.find(x => x.email === b.dataset.quitarPersonal);

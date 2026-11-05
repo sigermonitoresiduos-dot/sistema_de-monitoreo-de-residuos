@@ -767,7 +767,9 @@ getAuth,
 signInWithEmailAndPassword,
 signInAnonymously,
 onAuthStateChanged,
-signOut
+signOut,
+createUserWithEmailAndPassword,
+sendPasswordResetEmail
 }
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
@@ -1971,10 +1973,43 @@ async function abrirReporteDeTarea(id) {
     window.verDetalleReporte(id);
 }
 
+// INVITAR PERSONAL: crea la cuenta en Firebase Authentication con una
+// contraseña temporal aleatoria (nadie la ve) y le envía a la persona el
+// correo de Firebase para que cree su propia contraseña. Se usa una segunda
+// instancia de Firebase para no cerrar la sesión del jefe.
+async function invitarPersonal(correo) {
+    const email = String(correo || "").trim().toLowerCase();
+    const appInvitaciones = getApps().find(a => a.name === "invitaciones") || initializeApp(firebaseConfig, "invitaciones");
+    const authInvitaciones = getAuth(appInvitaciones);
+    let cuentaNueva = false;
+    try {
+        const azar = crypto.getRandomValues(new Uint8Array(24));
+        const temporal = Array.from(azar, b => b.toString(36).padStart(2, "0")).join("") + "Aa1!";
+        await createUserWithEmailAndPassword(authInvitaciones, email, temporal);
+        cuentaNueva = true;
+    } catch (error) {
+        // Si ya tenía cuenta, solo se le envía el correo para crear/cambiar su contraseña.
+        if (error?.code !== "auth/email-already-in-use") throw error;
+    } finally {
+        try { await signOut(authInvitaciones); } catch (e) { /* sin sesión */ }
+    }
+    auth.languageCode = "es";
+    const volver = { url: `${location.origin}${location.pathname}`, handleCodeInApp: false };
+    try {
+        await sendPasswordResetEmail(auth, email, volver);
+    } catch (error) {
+        // Si el dominio no está autorizado para el enlace de regreso, se envía sin él.
+        if (!/unauthorized|continue-uri|invalid-continue/i.test(error?.code || "")) throw error;
+        await sendPasswordResetEmail(auth, email);
+    }
+    return { cuentaNueva };
+}
+
 const tareasMunicipales = window.Tareas?.crear({
     db, auth, escaparHTML, mostrarToast, codigoReporte,
     fs: { collection, doc, addDoc, updateDoc, deleteDoc, setDoc, onSnapshot, query, where, serverTimestamp },
     correosJefes: CORREOS_ADMINISTRADORES,
+    invitar: email => invitarPersonal(email),
     esJefe: () => esJefe(), esPersonal: () => esAdministrador(),
     sonar: () => sonarAvisoAdmin(),
     abrirReporte: id => abrirReporteDeTarea(id),
